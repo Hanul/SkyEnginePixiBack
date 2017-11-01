@@ -12,22 +12,14 @@ OVERRIDE(SkyEngine.Image, (origin) => {
 			
 			let src = params.src;
 			
-			let sprite;
+			let sprite = new PIXI.Sprite.fromImage(src);
 			
-			PIXI.loader.add(src).load(() => {
-				
-				if (self.checkIsRemoved() !== true) {
-					
-					sprite = new PIXI.Sprite(PIXI.loader.resources[src].texture);
-					
-					sprite.x = -sprite.width / 2;
-					sprite.y = -sprite.height / 2;
-					
-					self.getPixiContainer().addChild(sprite);
-					
-					self.fireEvent('load');
-				}
-			});
+			sprite.x = -sprite.width / 2;
+			sprite.y = -sprite.height / 2;
+			
+			self.getPixiContainer().addChild(sprite);
+			
+			self.fireEvent('load');
 			
 			let remove;
 			OVERRIDE(self.remove, (origin) => {

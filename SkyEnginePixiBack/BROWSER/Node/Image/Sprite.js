@@ -23,45 +23,31 @@ OVERRIDE(SkyEngine.Sprite, (origin) => {
 			
 			if (src !== undefined) {
 				
-				PIXI.loader.add(src).load(() => {
-					
-					if (self.checkIsRemoved() !== true) {
-						
-						sprite = new PIXI.Sprite(PIXI.loader.resources[src].texture);
-						
-						sprite.x = -sprite.width / 2;
-						sprite.y = -sprite.height / 2;
-						
-						self.getPixiContainer().addChild(sprite);
-						
-						self.fireEvent('load');
-					}
-				});
+				sprite = new PIXI.Sprite.fromImage(src);
+				
+				sprite.x = -sprite.width / 2;
+				sprite.y = -sprite.height / 2;
+				
+				self.getPixiContainer().addChild(sprite);
+				
+				self.fireEvent('load');
 			}
 			
 			if (srcs !== undefined) {
 				
-				PIXI.loader.add(srcs).load(() => {
+				sprites = [];
+				
+				EACH(srcs, (src) => {
 					
-					if (self.checkIsRemoved() !== true) {
-						
-						if (sprites === undefined) {
-							sprites = [];
-						}
-						
-						EACH(srcs, (src) => {
-							
-							sprite = new PIXI.Sprite(PIXI.loader.resources[src].texture);
-							
-							sprite.x = -sprite.width / 2;
-							sprite.y = -sprite.height / 2;
-							
-							sprites.push(sprite);
-						});
-						
-						self.fireEvent('load');
-					}
+					sprite = new PIXI.Sprite.fromImage(src);
+					
+					sprite.x = -sprite.width / 2;
+					sprite.y = -sprite.height / 2;
+					
+					sprites.push(sprite);
 				});
+				
+				self.fireEvent('load');
 			}
 			
 			let step;
@@ -77,7 +63,10 @@ OVERRIDE(SkyEngine.Sprite, (origin) => {
 						}
 						
 						nowSprite = sprites[self.getFrame()];
-						self.getPixiContainer().addChild(nowSprite);
+						
+						if (nowSprite !== undefined) {
+							self.getPixiContainer().addChild(nowSprite);
+						}
 					}
 				};
 			});
