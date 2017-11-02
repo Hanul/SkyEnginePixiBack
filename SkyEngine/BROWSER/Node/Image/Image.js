@@ -231,6 +231,14 @@ SkyEngine.Image = CLASS((cls) => {
 					origin();
 				};
 			});
+			
+			let getWidth = inner.getWidth = () => {
+				return width;
+			};
+			
+			let getHeight = inner.getHeight = () => {
+				return height;
+			};
 		}
 	};
 });

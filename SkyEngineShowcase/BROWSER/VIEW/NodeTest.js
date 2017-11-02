@@ -10,7 +10,7 @@ SkyEngineShowcase.NodeTest = CLASS({
 		let man = SkyEngine.Rect({
 			width : 40,
 			height : 80,
-			color : 'green',
+			color : '#008000',
 			c : [
 			// head
 			SkyEngine.Circle({
@@ -18,7 +18,7 @@ SkyEngineShowcase.NodeTest = CLASS({
 				y : -40,
 				width : 50,
 				height : 50,
-				color : 'yellow'
+				color : '#FFFF00'
 			}),
 			
 			// left arm
@@ -29,14 +29,14 @@ SkyEngineShowcase.NodeTest = CLASS({
 				y : -40,
 				width : 20,
 				height : 60,
-				color : 'purple',
+				color : '#800080',
 				c : SkyEngine.Rect({
 					centerY : -30,
 					angle : -40,
 					y : 30,
 					width : 20,
 					height : 60,
-					color : 'purple'
+					color : '#800080'
 				})
 			}),
 			
@@ -48,14 +48,14 @@ SkyEngineShowcase.NodeTest = CLASS({
 				y : -40,
 				width : 20,
 				height : 60,
-				color : 'purple',
+				color : '#800080',
 				c : SkyEngine.Rect({
 					centerY : -30,
 					angle : 40,
 					y : 30,
 					width : 20,
 					height : 60,
-					color : 'purple'
+					color : '#800080'
 				})
 			})]
 		}).appendTo(SkyEngine.Screen);

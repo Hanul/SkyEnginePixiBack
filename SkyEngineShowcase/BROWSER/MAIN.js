@@ -48,11 +48,6 @@ SkyEngineShowcase.MAIN = METHOD({
 		});
 		
 		SkyEngineShowcase.MATCH_VIEW({
-			uri : 'test/filter',
-			target : SkyEngineShowcase.FilterTest
-		});
-		
-		SkyEngineShowcase.MATCH_VIEW({
 			uri : 'test/blendmode',
 			target : SkyEngineShowcase.BlendModeTest
 		});

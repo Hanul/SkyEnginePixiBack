@@ -27,7 +27,7 @@ OVERRIDE(SkyEngine.Figure, (origin) => {
 			
 			let graphics = new PIXI.Graphics();
 			
-			self.getPixiContainer().addChild(graphics);
+			self.addToPixiContainer(graphics);
 			
 			let drawGraphics = inner.drawGraphics = (f) => {
 				
@@ -45,6 +45,26 @@ OVERRIDE(SkyEngine.Figure, (origin) => {
 					graphics.endFill();
 				}
 			};
+			
+			let setBlendMode;
+			OVERRIDE(self.setBlendMode, (origin) => {
+				
+				setBlendMode = self.setBlendMode = (blendMode) => {
+					//REQUIRED: blendMode
+					
+					graphics.blendMode = SkyEnginePixiBack.Util.getPixiBlendMode(blendMode);
+					origin(blendMode);
+				};
+			});
+			
+			let removeBlendMode;
+			OVERRIDE(self.removeBlendMode, (origin) => {
+				
+				removeBlendMode = self.removeBlendMode = () => {
+					graphics.blendMode = PIXI.BLEND_MODES.NORMAL;
+					origin();
+				};
+			});
 		}
 	});
 });

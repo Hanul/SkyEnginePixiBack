@@ -21,34 +21,79 @@ OVERRIDE(SkyEngine.Sprite, (origin) => {
 			let sprites;
 			let nowSprite;
 			
-			if (src !== undefined) {
+			self.on('load', () => {
 				
-				sprite = new PIXI.Sprite.fromImage(src);
-				
-				sprite.x = -sprite.width / 2;
-				sprite.y = -sprite.height / 2;
-				
-				self.getPixiContainer().addChild(sprite);
-				
-				self.fireEvent('load');
-			}
+				if (self.checkIsRemoved() !== true) {
+					
+					if (src !== undefined) {
+						
+						sprite = new PIXI.Sprite.fromImage(src);
+						
+						sprite.x = -inner.getWidth() / 2;
+						sprite.y = -inner.getHeight() / 2;
+						
+						sprite.blendMode = SkyEnginePixiBack.Util.getPixiBlendMode(self.getBlendMode());
+						
+						self.addToPixiContainer(sprite);
+					}
+					
+					if (srcs !== undefined) {
+						
+						sprites = [];
+						
+						EACH(srcs, (src) => {
+							
+							sprite = new PIXI.Sprite.fromImage(src);
+							
+							sprite.x = -inner.getWidth() / 2;
+							sprite.y = -inner.getHeight() / 2;
+							
+							sprite.blendMode = SkyEnginePixiBack.Util.getPixiBlendMode(self.getBlendMode());
+							
+							sprites.push(sprite);
+						});
+					}
+				}
+			});
 			
-			if (srcs !== undefined) {
+			let setBlendMode;
+			OVERRIDE(self.setBlendMode, (origin) => {
 				
-				sprites = [];
+				setBlendMode = self.setBlendMode = (blendMode) => {
+					//REQUIRED: blendMode
+					
+					if (sprite !== undefined) {
+						sprite.blendMode = SkyEnginePixiBack.Util.getPixiBlendMode(blendMode);
+					}
+					
+					if (sprites !== undefined) {
+						EACH(sprites, (sprite) => {
+							sprite.blendMode = SkyEnginePixiBack.Util.getPixiBlendMode(blendMode);
+						});
+					}
+					
+					origin(blendMode);
+				};
+			});
+			
+			let removeBlendMode;
+			OVERRIDE(self.removeBlendMode, (origin) => {
 				
-				EACH(srcs, (src) => {
+				removeBlendMode = self.removeBlendMode = () => {
 					
-					sprite = new PIXI.Sprite.fromImage(src);
+					if (sprite !== undefined) {
+						sprite.blendMode = PIXI.BLEND_MODES.NORMAL;
+					}
 					
-					sprite.x = -sprite.width / 2;
-					sprite.y = -sprite.height / 2;
+					if (sprites !== undefined) {
+						EACH(sprites, (sprite) => {
+							sprite.blendMode = PIXI.BLEND_MODES.NORMAL;
+						});
+					}
 					
-					sprites.push(sprite);
-				});
-				
-				self.fireEvent('load');
-			}
+					origin();
+				};
+			});
 			
 			let step;
 			OVERRIDE(self.step, (origin) => {
@@ -56,16 +101,16 @@ OVERRIDE(SkyEngine.Sprite, (origin) => {
 				step = self.step = (deltaTime) => {
 					origin(deltaTime);
 					
-					if (self.getFrame() !== self.getBeforeFrame()) {
+					if (sprites !== undefined && self.getFrame() !== self.getBeforeFrame()) {
 						
 						if (nowSprite !== undefined) {
-							self.getPixiContainer().removeChild(nowSprite);
+							self.removeFromPixiContainer(nowSprite);
 						}
 						
 						nowSprite = sprites[self.getFrame()];
 						
 						if (nowSprite !== undefined) {
-							self.getPixiContainer().addChild(nowSprite);
+							self.addToPixiContainer(nowSprite);
 						}
 					}
 				};

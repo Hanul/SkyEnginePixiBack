@@ -24,7 +24,7 @@ OVERRIDE(SkyEngine.Screen, (origin) => {
 			
 			let stage = new PIXI.Container();
 			
-			stage.addChild(self.getPixiContainer());
+			stage.addChild(inner.getPixiContainer());
 			
 			let left;
 			let top;

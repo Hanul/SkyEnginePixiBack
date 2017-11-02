@@ -9,13 +9,13 @@ SkyEngineShowcase.BlendModeTest = CLASS({
 		let rect = SkyEngine.Rect({
 			width : 300,
 			height : 200,
-			color : 'blue'
+			color : '#0000FF'
 		}).appendTo(SkyEngine.Screen);
 		
 		let circle = SkyEngine.Circle({
 			width : 300,
 			height : 200,
-			color : 'yellow'
+			color : '#FFFF00'
 		}).appendTo(SkyEngine.Screen);
 		
 		let character = SkyEngine.Sprite({
@@ -41,8 +41,6 @@ SkyEngineShowcase.BlendModeTest = CLASS({
 			rect.remove();
 			circle.remove();
 			character.remove();
-			
-			SkyEngine.Screen.removeFilter();
 		});
 	}
 });

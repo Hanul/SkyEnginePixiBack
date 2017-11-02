@@ -3,6 +3,8 @@
 
 * `draw` 및 `drawArea` 함수를 사용하지 않습니다.
 * [`CanvasRenderingContext2D.createLinearGradient`](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/createLinearGradient) 및 [`CanvasRenderingContext2D.createRadialGradient`](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/createRadialGradient)를 사용할 수 없습니다.
+* `red`, `green`, `blue` 등 색상 이름을 사용할 수 없습니다. `#123456`와 같은 색상 코드값을 입력해야 합니다.
+* `scale`이 변경되는 경우 자식 노드의 스케일이 [SkyEngine](http://skyengine.uppercase.io/)과는 다르게 동작합니다.
 
 ## 설치하기
 프로젝트의 `DEPENDENCY` 파일에 `Hanul/SkyEnginePixiBack`을 추가합니다.

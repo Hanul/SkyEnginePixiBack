@@ -12,14 +12,49 @@ OVERRIDE(SkyEngine.Image, (origin) => {
 			
 			let src = params.src;
 			
-			let sprite = new PIXI.Sprite.fromImage(src);
+			let sprite;
 			
-			sprite.x = -sprite.width / 2;
-			sprite.y = -sprite.height / 2;
+			self.on('load', () => {
+				
+				if (self.checkIsRemoved() !== true) {
+					
+					sprite = new PIXI.Sprite.fromImage(src);
+					
+					sprite.x = -inner.getWidth() / 2;
+					sprite.y = -inner.getHeight() / 2;
+					
+					sprite.blendMode = SkyEnginePixiBack.Util.getPixiBlendMode(self.getBlendMode());
+					
+					self.addToPixiContainer(sprite);
+				}
+			});
 			
-			self.getPixiContainer().addChild(sprite);
+			let setBlendMode;
+			OVERRIDE(self.setBlendMode, (origin) => {
+				
+				setBlendMode = self.setBlendMode = (blendMode) => {
+					//REQUIRED: blendMode
+					
+					if (sprite !== undefined) {
+						sprite.blendMode = SkyEnginePixiBack.Util.getPixiBlendMode(blendMode);
+					}
+					
+					origin(blendMode);
+				};
+			});
 			
-			self.fireEvent('load');
+			let removeBlendMode;
+			OVERRIDE(self.removeBlendMode, (origin) => {
+				
+				removeBlendMode = self.removeBlendMode = () => {
+					
+					if (sprite !== undefined) {
+						sprite.blendMode = PIXI.BLEND_MODES.NORMAL;
+					}
+					
+					origin();
+				};
+			});
 			
 			let remove;
 			OVERRIDE(self.remove, (origin) => {

@@ -1518,6 +1518,10 @@ SkyEngine.Node = CLASS({
 			domWrapper.append(dom);
 		};
 		
+		inner.getDomWrapper = () => {
+			return domWrapper;
+		};
+		
 		let getDomWrapper = self.getDomWrapper = () => {
 			
 			if (domWrapper === undefined) {
