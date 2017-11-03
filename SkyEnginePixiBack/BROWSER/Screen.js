@@ -193,10 +193,18 @@ OVERRIDE(SkyEngine.Screen, (origin) => {
 				let widthRatio = winWidth / width;
 				let heightRatio = winHeight / height;
 				
-				if (widthRatio < heightRatio) {
+				if (BROWSER_CONFIG.SkyEngine.width !== undefined && widthRatio < heightRatio) {
 					ratio = widthRatio;
 				} else {
 					ratio = heightRatio;
+				}
+				
+				if (BROWSER_CONFIG.SkyEngine.width === undefined) {
+					width /= ratio;
+				}
+				
+				if (BROWSER_CONFIG.SkyEngine.height === undefined) {
+					height /= ratio;
 				}
 				
 				canvas.addStyle({

@@ -300,6 +300,14 @@ SkyEngine.Screen = OBJECT({
 				ratio = heightRatio;
 			}
 			
+			if (BROWSER_CONFIG.SkyEngine.width === undefined) {
+				width /= ratio;
+			}
+			
+			if (BROWSER_CONFIG.SkyEngine.height === undefined) {
+				height /= ratio;
+			}
+			
 			canvas.addStyle({
 				width : width * ratio,
 				height : height * ratio
