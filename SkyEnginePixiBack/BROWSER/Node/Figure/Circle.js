@@ -1,22 +1,37 @@
 OVERRIDE(SkyEngine.Circle, (origin) => {
 	
-	SkyEngine.Circle = CLASS({
+	SkyEngine.Circle = CLASS((cls) => {
 		
-		preset : () => {
-			return origin;
-		},
+		let findRaycastPoints = cls.findRaycastPoints = origin.findRaycastPoints;
 		
-		init : (inner, self, params) => {
-			//REQUIRED: params
-			//REQUIRED: params.width	원의 너비
-			//REQUIRED: params.height	원의 높이
+		return {
+			preset : () => {
+				return origin;
+			},
 			
-			let width = params.width;
-			let height = params.height;
-			
-			inner.drawGraphics((graphics) => {
-				graphics.drawEllipse(0, 0, width / 2, height / 2);
-			});
-		}
+			init : (inner, self, params) => {
+				//REQUIRED: params
+				//REQUIRED: params.width	원의 너비
+				//REQUIRED: params.height	원의 높이
+				
+				let width = params.width;
+				let height = params.height;
+				
+				inner.drawGraphics((graphics) => {
+					graphics.drawEllipse(0, 0, width / 2, height / 2);
+				});
+				
+				let drawPixiArea;
+				OVERRIDE(self.drawPixiArea, (origin) => {
+					
+					drawPixiArea = self.drawPixiArea = (graphics) => {
+						
+						graphics.drawEllipse(0, 0, width / 2, height / 2);
+						
+						origin(graphics);
+					};
+				});
+			}
+		};
 	});
 });

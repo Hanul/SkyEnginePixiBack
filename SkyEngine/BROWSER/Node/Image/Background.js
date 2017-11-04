@@ -13,14 +13,35 @@ SkyEngine.Background = CLASS({
 		//OPTIONAL: params.isNotToRepeatX
 		//OPTIONAL: params.isNotToRepeatY
 		//OPTIONAL: params.followScreenRatio
+		//OPTIONAL: params.leftMargin
+		//OPTIONAL: params.rightMargin
+		//OPTIONAL: params.topMargin
+		//OPTIONAL: params.bottomMargin
 		
 		let src = params.src;
 		let isNotToRepeatX = params.isNotToRepeatX;
 		let isNotToRepeatY = params.isNotToRepeatY;
 		let followScreenRatio = params.followScreenRatio;
+		let leftMargin = params.leftMargin;
+		let rightMargin = params.rightMargin;
+		let topMargin = params.topMargin;
+		let bottomMargin = params.bottomMargin;
 		
 		if (followScreenRatio === undefined) {
 			followScreenRatio = 0;
+		}
+		
+		if (leftMargin === undefined) {
+			leftMargin = 0;
+		}
+		if (rightMargin === undefined) {
+			rightMargin = 0;
+		}
+		if (topMargin === undefined) {
+			topMargin = 0;
+		}
+		if (bottomMargin === undefined) {
+			bottomMargin = 0;
 		}
 		
 		let width;
@@ -95,7 +116,7 @@ SkyEngine.Background = CLASS({
 						let halfScreenHeight = SkyEngine.Screen.getHeight() / 2 / SkyEngine.Screen.getRealScaleY() / self.getRealScaleY();
 						
 						while (screenY - halfScreenHeight < _y + self.getY()) {
-							_y -= height;
+							_y -= topMargin + height + bottomMargin;
 						}
 						
 						while (_y + self.getY() < screenY + halfScreenHeight) {
@@ -107,7 +128,7 @@ SkyEngine.Background = CLASS({
 								width,
 								height);
 							
-							_y += height;
+							_y += topMargin + height + bottomMargin;
 						}
 					}
 					
@@ -120,7 +141,7 @@ SkyEngine.Background = CLASS({
 						let halfScreenWidth = SkyEngine.Screen.getWidth() / 2 / SkyEngine.Screen.getRealScaleX() / self.getRealScaleX();
 						
 						while (screenX - halfScreenWidth < _x + self.getX()) {
-							_x -= width;
+							_x -= leftMargin + width + rightMargin;
 						}
 						
 						while (_x + self.getX() < screenX + halfScreenWidth) {
@@ -132,7 +153,7 @@ SkyEngine.Background = CLASS({
 								width,
 								height);
 							
-							_x += width;
+							_x += leftMargin + width + rightMargin;
 						}
 					}
 					
@@ -148,11 +169,11 @@ SkyEngine.Background = CLASS({
 						let halfScreenHeight = SkyEngine.Screen.getHeight() / 2 / SkyEngine.Screen.getRealScaleY() / self.getRealScaleY();
 						
 						while (screenX - halfScreenWidth < _x + self.getX()) {
-							_x -= width;
+							_x -= leftMargin + width + rightMargin;
 						}
 						
 						while (screenY - halfScreenHeight < _y + self.getY()) {
-							_y -= height;
+							_y -= topMargin + height + bottomMargin;
 						}
 						
 						while (_y + self.getY() < screenY + halfScreenHeight) {
@@ -168,10 +189,10 @@ SkyEngine.Background = CLASS({
 									width,
 									height);
 								
-								_x2 += width;
+								_x2 += leftMargin + width + rightMargin;
 							}
 							
-							_y += height;
+							_y += topMargin + height + bottomMargin;
 						}
 					}
 				}

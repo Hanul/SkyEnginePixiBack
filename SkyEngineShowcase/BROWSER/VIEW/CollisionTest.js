@@ -12,7 +12,7 @@ SkyEngineShowcase.CollisionTest = CLASS({
 			startY : -10,
 			endX : 100,
 			endY : 10,
-			border : '5px solid red'
+			border : '5px solid #FF0000'
 		}).appendTo(SkyEngine.Screen);
 		
 		line.addCollider(SkyEngine.Line({
@@ -27,7 +27,7 @@ SkyEngineShowcase.CollisionTest = CLASS({
 			y : 80,
 			width : 60,
 			height : 40,
-			color : 'green',
+			color : '#10B506',
 			scale : 1.2,
 			angle : 45,
 			on : {
@@ -51,7 +51,7 @@ SkyEngineShowcase.CollisionTest = CLASS({
 			y : -50,
 			width : 60,
 			height : 40,
-			color : 'yellow',
+			color : '#FFFF00',
 			scale : 1.2,
 			angle : 45,
 			on : {
@@ -107,7 +107,7 @@ SkyEngineShowcase.CollisionTest = CLASS({
 				x : 20,
 				y : -50
 			}],
-			color : 'yellow',
+			color : '#FFFF00',
 			scale : 0.7,
 			angle : -45,
 			on : {

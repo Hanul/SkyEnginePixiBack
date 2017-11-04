@@ -237,19 +237,12 @@ SkyEngineShowcase.RaycastTest = CLASS({
 				return pointA.angleSquare - pointB.angleSquare;
 			});
 			
-			// 그라디언트 색상 생성
-			let gradient = SkyEngine.Screen.getCanvasContext().createRadialGradient(torch.getX(), torch.getY(), 0, torch.getX(), torch.getY(), 500);
-			gradient.addColorStop(0, '#FFCC00');
-			gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
-			
 			// 빛 생성
 			light = SkyEngine.Polygon({
 				points : foundPoints,
-				color : gradient,
-				z : -1
+				color : '#FFCC00',
+				zIndex : -1
 			}).appendTo(SkyEngine.Screen);
-			
-			light.setFilter('blur(2px)');
 		};
 		
 		let torch = SkyEngine.Sprite({

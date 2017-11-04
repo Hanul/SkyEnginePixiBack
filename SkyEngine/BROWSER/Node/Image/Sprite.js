@@ -282,5 +282,9 @@ SkyEngine.Sprite = CLASS({
 		let getImgs = inner.getImgs = () => {
 			return imgs;
 		};
+		
+		let getRealFrame = inner.getRealFrame = () => {
+			return realFrame;
+		};
 	}
 });

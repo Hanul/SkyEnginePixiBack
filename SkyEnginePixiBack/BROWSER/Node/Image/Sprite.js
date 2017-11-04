@@ -16,8 +16,14 @@ OVERRIDE(SkyEngine.Sprite, (origin) => {
 			
 			let src = params.src;
 			let srcs = params.srcs;
+			let spriteWidth = params.spriteWidth;
+			let spriteHeight = params.spriteHeight;
 			
-			let sprite;
+			let imageWidth;
+			let imageHeight;
+			let frameCount;
+			
+			let tilingSprite;
 			let sprites;
 			let nowSprite;
 			
@@ -29,33 +35,48 @@ OVERRIDE(SkyEngine.Sprite, (origin) => {
 						
 						let img = inner.getImg();
 						
-						sprite = new PIXI.Sprite.fromImage(img.src);
+						imageWidth = img.width;
+						imageHeight = img.height;
 						
-						sprite.x = -img.width / 2;
-						sprite.y = -img.height / 2;
+						if (spriteWidth === undefined) {
+							spriteWidth = imageWidth;
+						}
 						
-						sprite.blendMode = SkyEnginePixiBack.Util.getPixiBlendMode(self.getBlendMode());
+						if (spriteHeight === undefined) {
+							spriteHeight = imageHeight;
+						}
 						
-						self.addToPixiContainer(sprite);
+						if (frameCount === undefined) {
+							frameCount = imageWidth / spriteWidth * imageHeight / spriteHeight;
+						}
+						
+						tilingSprite = new PIXI.TilingSprite.fromImage(img.src, spriteWidth, spriteHeight);
+						
+						tilingSprite.x = -spriteWidth / 2;
+						tilingSprite.y = -spriteHeight / 2;
+						
+						tilingSprite.blendMode = SkyEnginePixiBack.Util.getPixiBlendMode(self.getBlendMode());
+						
+						self.addToPixiContainer(tilingSprite);
 					}
 					
 					if (srcs !== undefined) {
 						
 						let imgs = inner.getImgs();
-						
-						sprites = [];
-						
-						EACH(imgs, (img) => {
-							
-							sprite = new PIXI.Sprite.fromImage(img.src);
-							
-							sprite.x = -img.width / 2;
-							sprite.y = -img.height / 2;
-							
-							sprite.blendMode = SkyEnginePixiBack.Util.getPixiBlendMode(self.getBlendMode());
-							
-							sprites.push(sprite);
-						});
+						                        
+                        sprites = [];
+                        
+                        EACH(imgs, (img) => {
+                            
+                            let sprite = new PIXI.Sprite.fromImage(img.src);
+                            
+                            sprite.x = -img.width / 2;
+                            sprite.y = -img.height / 2;
+                            
+                            sprite.blendMode = SkyEnginePixiBack.Util.getPixiBlendMode(self.getBlendMode());
+                            
+                            sprites.push(sprite);
+                        });
 					}
 				}
 			});
@@ -66,8 +87,8 @@ OVERRIDE(SkyEngine.Sprite, (origin) => {
 				setBlendMode = self.setBlendMode = (blendMode) => {
 					//REQUIRED: blendMode
 					
-					if (sprite !== undefined) {
-						sprite.blendMode = SkyEnginePixiBack.Util.getPixiBlendMode(blendMode);
+					if (tilingSprite !== undefined) {
+						tilingSprite.blendMode = SkyEnginePixiBack.Util.getPixiBlendMode(blendMode);
 					}
 					
 					if (sprites !== undefined) {
@@ -85,8 +106,8 @@ OVERRIDE(SkyEngine.Sprite, (origin) => {
 				
 				removeBlendMode = self.removeBlendMode = () => {
 					
-					if (sprite !== undefined) {
-						sprite.blendMode = PIXI.BLEND_MODES.NORMAL;
+					if (tilingSprite !== undefined) {
+						tilingSprite.blendMode = PIXI.BLEND_MODES.NORMAL;
 					}
 					
 					if (sprites !== undefined) {
@@ -105,16 +126,24 @@ OVERRIDE(SkyEngine.Sprite, (origin) => {
 				step = self.step = (deltaTime) => {
 					origin(deltaTime);
 					
-					if (sprites !== undefined && self.getFrame() !== self.getBeforeFrame()) {
+					if (self.getFrame() !== self.getBeforeFrame()) {
 						
-						if (nowSprite !== undefined) {
-							self.removeFromPixiContainer(nowSprite);
+						if (sprites !== undefined) {
+							
+							if (nowSprite !== undefined) {
+								self.removeFromPixiContainer(nowSprite);
+							}
+							
+							nowSprite = sprites[self.getFrame()];
+							
+							if (nowSprite !== undefined) {
+								self.addToPixiContainer(nowSprite);
+							}
 						}
 						
-						nowSprite = sprites[self.getFrame()];
-						
-						if (nowSprite !== undefined) {
-							self.addToPixiContainer(nowSprite);
+						else if (tilingSprite !== undefined) {
+							tilingSprite.tilePosition.x = spriteWidth * Math.floor(inner.getRealFrame() % (imageWidth / spriteWidth));
+							tilingSprite.tilePosition.y = spriteHeight * Math.floor(inner.getRealFrame() / (imageWidth / spriteWidth));
 						}
 					}
 				};
@@ -125,7 +154,7 @@ OVERRIDE(SkyEngine.Sprite, (origin) => {
 				
 				remove = self.remove = () => {
 					
-					sprite = undefined;
+					tilingSprite = undefined;
 					sprites = undefined;
 					
 					origin();

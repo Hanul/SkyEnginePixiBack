@@ -126,6 +126,18 @@ SkyEngineShowcase.MainMenu = CLASS({
 						marginTop : 15
 					},
 					c : A({
+						c : '배경 테스트',
+						on : {
+							tap : () => {
+								SkyEngineShowcase.GO('test/background');
+							}
+						}
+					})
+				}), LI({
+					style : {
+						marginTop : 15
+					},
+					c : A({
 						c : '블렌드 모드 테스트',
 						on : {
 							tap : () => {

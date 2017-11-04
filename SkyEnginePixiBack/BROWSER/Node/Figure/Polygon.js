@@ -1,31 +1,56 @@
 OVERRIDE(SkyEngine.Polygon, (origin) => {
 	
-	SkyEngine.Polygon = CLASS({
+	SkyEngine.Polygon = CLASS((cls) => {
 		
-		preset : () => {
-			return origin;
-		},
+		let findRaycastPoints = cls.findRaycastPoints = origin.findRaycastPoints;
 		
-		init : (inner, self, params) => {
-			//REQUIRED: params
-			//REQUIRED: params.points	다각형을 이루는 점들의 좌표들
+		return {
+			preset : () => {
+				return origin;
+			},
 			
-			let points = params.points;
-			
-			inner.drawGraphics((graphics) => {
+			init : (inner, self, params) => {
+				//REQUIRED: params
+				//REQUIRED: params.points	다각형을 이루는 점들의 좌표들
 				
-				let pixiPoints = [];
+				let points = params.points;
 				
-				EACH(points, (point) => {
-					pixiPoints.push(new PIXI.Point(point.x, point.y));
+				inner.drawGraphics((graphics) => {
+					
+					let pixiPoints = [];
+					
+					EACH(points, (point) => {
+						pixiPoints.push(new PIXI.Point(point.x, point.y));
+					});
+					
+					if (points.length > 0) {
+						pixiPoints.push(new PIXI.Point(points[0].x, points[0].y));
+					}
+					
+					graphics.drawPolygon(pixiPoints);
 				});
 				
-				if (points.length > 0) {
-					pixiPoints.push(new PIXI.Point(points[0].x, points[0].y));
-				}
-				
-				graphics.drawPolygon(pixiPoints);
-			});
-		}
+				let drawPixiArea;
+				OVERRIDE(self.drawPixiArea, (origin) => {
+					
+					drawPixiArea = self.drawPixiArea = (graphics) => {
+						
+						let pixiPoints = [];
+						
+						EACH(points, (point) => {
+							pixiPoints.push(new PIXI.Point(point.x, point.y));
+						});
+						
+						if (points.length > 0) {
+							pixiPoints.push(new PIXI.Point(points[0].x, points[0].y));
+						}
+						
+						graphics.drawPolygon(pixiPoints);
+						
+						origin(graphics);
+					};
+				});
+			}
+		};
 	});
 });

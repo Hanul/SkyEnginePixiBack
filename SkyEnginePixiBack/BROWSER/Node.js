@@ -60,19 +60,47 @@ OVERRIDE(SkyEngine.Node, (origin) => {
 				// 터치 영역을 그립니다.
 				let touchAreas = self.getTouchAreas();
 				
+				centerGraphics.lineStyle(1, 0xFF00FF, 1);
+				
 				for (let i = 0; i < touchAreas.length; i += 1) {
-					drawAllArea(touchAreas[i], context, '#FF00FF');
+					touchAreas[i].drawPixiArea(centerGraphics);
 				}
 				
 				// 충돌 영역을 그립니다.
 				let colliders = self.getColliders();
 				
+				centerGraphics.lineStyle(1, 0x00FF00, 1);
+				
 				for (let i = 0; i < colliders.length; i += 1) {
-					drawAllArea(colliders[i], context, '#00FF00');
+					colliders[i].drawPixiArea(centerGraphics);
 				}
 				
 				centerGraphics.zIndex = 999999;
 				addToPixiContainer(centerGraphics);
+				
+				let addTouchArea;
+				OVERRIDE(self.addTouchArea, (origin) => {
+					
+					addTouchArea = self.addTouchArea = (touchArea) => {
+						
+						centerGraphics.lineStyle(1, 0xFF00FF, 1);
+						touchArea.drawPixiArea(centerGraphics);
+						
+						origin(touchArea);
+					};
+				});
+				
+				let addCollider;
+				OVERRIDE(self.addCollider, (origin) => {
+					
+					addCollider = self.addCollider = (collider) => {
+						
+						centerGraphics.lineStyle(1, 0x00FF00, 1);
+						collider.drawPixiArea(centerGraphics);
+						
+						origin(collider);
+					};
+				});
 			}
 			
 			let setZIndex;
@@ -140,6 +168,17 @@ OVERRIDE(SkyEngine.Node, (origin) => {
 					}
 				};
 			});
+			
+			let drawPixiArea = self.drawPixiArea = (graphics, color) => {
+				//REQUIRED: graphics
+				//REQUIRED: color
+				
+				let children = self.getChildren();
+				
+				for (let i = 0; i < children.length; i += 1) {
+					children[i].drawPixiArea(graphics, color);
+				}
+			};
 			
 			let remove;
 			OVERRIDE(self.remove, (origin) => {

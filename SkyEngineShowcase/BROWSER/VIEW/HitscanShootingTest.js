@@ -86,7 +86,7 @@ SkyEngineShowcase.HitscanShootingTest = CLASS({
 									endX : hero.getX() + 66,
 									endY : hero.getY() + 24,
 									isEndless : true,
-									border : '1px solid #fff',
+									border : '1px solid #ffffff',
 									collider : SkyEngine.Line({
 										startX : hero.getX() + 65,
 										startY : hero.getY() + 24,

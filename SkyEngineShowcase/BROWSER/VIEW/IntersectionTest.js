@@ -11,7 +11,7 @@ SkyEngineShowcase.IntersectionTest = CLASS({
 			startY : -10,
 			endX : 100,
 			endY : 10,
-			border : '5px solid red'
+			border : '5px solid #FF0000'
 		}).appendTo(SkyEngine.Screen);
 		
 		line.addCollider(SkyEngine.Line({
@@ -26,7 +26,7 @@ SkyEngineShowcase.IntersectionTest = CLASS({
 			y : 80,
 			width : 60,
 			height : 40,
-			color : 'green',
+			color : '#10B506',
 			scale : 1.2,
 			angle : 45,
 			on : {
@@ -46,7 +46,7 @@ SkyEngineShowcase.IntersectionTest = CLASS({
 			y : -50,
 			width : 60,
 			height : 40,
-			color : 'green',
+			color : '#10B506',
 			scale : 1.2,
 			angle : 45,
 			on : {
@@ -74,7 +74,7 @@ SkyEngineShowcase.IntersectionTest = CLASS({
 				x : 20,
 				y : -50
 			}],
-			color : 'green',
+			color : '#10B506',
 			scale : 0.7,
 			angle : 45,
 			on : {
@@ -104,7 +104,7 @@ SkyEngineShowcase.IntersectionTest = CLASS({
 			startY : 10,
 			endX : 100,
 			endY : -10,
-			border : '5px solid red'
+			border : '5px solid #FF0000'
 		}).appendTo(SkyEngine.Screen);
 		
 		line2.addCollider(SkyEngine.Line({
@@ -125,7 +125,7 @@ SkyEngineShowcase.IntersectionTest = CLASS({
 					y : intersectionPoint.y,
 					width : 10,
 					height : 10,
-					color : 'yellow'
+					color : '#FFFF00'
 				}).appendTo(SkyEngine.Screen));
 			});
 		});
