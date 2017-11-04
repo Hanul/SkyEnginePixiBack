@@ -192,12 +192,8 @@ SkyEngine.Background = CLASS({
 			};
 		});
 		
-		let getWidth = inner.getWidth = () => {
-			return width;
-		};
-		
-		let getHeight = inner.getHeight = () => {
-			return height;
+		let getImg = inner.getImg = () => {
+			return img;
 		};
 	}
 });

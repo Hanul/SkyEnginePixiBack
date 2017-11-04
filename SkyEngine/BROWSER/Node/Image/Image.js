@@ -22,7 +22,7 @@ SkyEngine.Image = CLASS((cls) => {
 			let imageData;
 			let isImageDataLoading = false;
 			
-			let polygon;
+			let polygonPoints;
 			
 			let width;
 			let height;
@@ -154,7 +154,7 @@ SkyEngine.Image = CLASS((cls) => {
 				
 				drawArea = self.drawArea = (context) => {
 					
-					if (polygon === undefined) {
+					if (polygonPoints === undefined) {
 						
 						if (imageData === undefined) {
 							
@@ -180,7 +180,7 @@ SkyEngine.Image = CLASS((cls) => {
 									
 									imageData = imageContext.getImageData(0, 0, width, height).data;
 									
-									polygon = SkyEngine.Util.ImageData.convertImageDataToPolygon(imageData, width);
+									polygonPoints = SkyEngine.Util.ImageData.convertImageDataToPolygonPoints(imageData, width);
 									
 									// clear.
 									imageContext = undefined;
@@ -196,20 +196,20 @@ SkyEngine.Image = CLASS((cls) => {
 						}
 						
 						else {
-							polygon = SkyEngine.Util.ImageData.convertImageDataToPolygon(imageData, width);
+							polygonPoints = SkyEngine.Util.ImageData.convertImageDataToPolygonPoints(imageData, width);
 						}
 					}
 					
-					else if (polygon.length > 0) {
+					else if (polygonPoints.length > 0) {
 						
-						context.moveTo(polygon[0].x - width / 2, polygon[0].y - height / 2);
+						context.moveTo(polygonPoints[0].x - width / 2, polygonPoints[0].y - height / 2);
 						
-						for (let i = 1; i < polygon.length; i += 1) {
-							let point = polygon[i];
+						for (let i = 1; i < polygonPoints.length; i += 1) {
+							let point = polygonPoints[i];
 							context.lineTo(point.x - width / 2, point.y - height / 2);
 						}
 						
-						context.lineTo(polygon[0].x - width / 2, polygon[0].y - height / 2);
+						context.lineTo(polygonPoints[0].x - width / 2, polygonPoints[0].y - height / 2);
 					}
 					
 					origin(context);
@@ -226,18 +226,14 @@ SkyEngine.Image = CLASS((cls) => {
 					
 					imageData = undefined;
 					
-					polygon = undefined;
+					polygonPoints = undefined;
 					
 					origin();
 				};
 			});
 			
-			let getWidth = inner.getWidth = () => {
-				return width;
-			};
-			
-			let getHeight = inner.getHeight = () => {
-				return height;
+			let getImg = inner.getImg = () => {
+				return img;
 			};
 		}
 	};

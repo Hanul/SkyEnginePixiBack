@@ -11,7 +11,7 @@ SkyEngineShowcase.EventTest = CLASS({
 			y : -50,
 			width : 60,
 			height : 40,
-			color : 'green',
+			color : '#008000',
 			scale : 1.2,
 			angle : 45,
 			on : {
@@ -35,7 +35,7 @@ SkyEngineShowcase.EventTest = CLASS({
 			y : -50,
 			width : 60,
 			height : 40,
-			color : 'yellow',
+			color : '#FFFF00',
 			scale : 1.2,
 			angle : 45,
 			on : {
@@ -43,7 +43,7 @@ SkyEngineShowcase.EventTest = CLASS({
 					console.log('This is Circle!');
 				},
 				offscreen :  () => {
-					//console.log('Offscreen!');
+					console.log('Offscreen!');
 				}
 			}
 		}).appendTo(SkyEngine.Screen);
@@ -119,7 +119,7 @@ SkyEngineShowcase.EventTest = CLASS({
 				x : 20,
 				y : -50
 			}],
-			color : 'yellow',
+			color : '#FFFF00',
 			scale : 0.7,
 			angle : -45,
 			on : {
@@ -162,7 +162,7 @@ SkyEngineShowcase.EventTest = CLASS({
 			fps : 10,
 			scale : 0.2,
 			angle : 45,
-			color : 'green',
+			color : '#008000',
 			on : {
 				touchstart : () => {
 					console.log('This is Silhouette!');

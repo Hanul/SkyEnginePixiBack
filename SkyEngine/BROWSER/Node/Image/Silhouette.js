@@ -37,7 +37,7 @@ SkyEngine.Silhouette = CLASS((cls) => {
 			let img;
 			let imageData;
 			
-			let polygon;
+			let polygonPoints;
 			
 			let width;
 			let height;
@@ -92,7 +92,7 @@ SkyEngine.Silhouette = CLASS((cls) => {
 					imageCanvas.remove();
 					
 					if (border !== undefined) {
-						polygon = SkyEngine.Util.ImageData.convertImageDataToPolygon(imageData, width);
+						polygonPoints = SkyEngine.Util.ImageData.convertImageDataToPolygonPoints(imageData, width);
 					}
 					
 					self.fireEvent('load');
@@ -174,17 +174,17 @@ SkyEngine.Silhouette = CLASS((cls) => {
 							width,
 							height);
 						
-						if (border !== undefined && polygon.length > 0) {
+						if (border !== undefined && polygonPoints.length > 0) {
 							
 							context.beginPath();
-							context.moveTo(polygon[0].x - width / 2, polygon[0].y - height / 2);
+							context.moveTo(polygonPoints[0].x - width / 2, polygonPoints[0].y - height / 2);
 							
-							for (let i = 1; i < polygon.length; i += 1) {
-								let point = polygon[i];
+							for (let i = 1; i < polygonPoints.length; i += 1) {
+								let point = polygonPoints[i];
 								context.lineTo(point.x - width / 2, point.y - height / 2);
 							}
 							
-							context.lineTo(polygon[0].x - width / 2, polygon[0].y - height / 2);
+							context.lineTo(polygonPoints[0].x - width / 2, polygonPoints[0].y - height / 2);
 							
 							context.lineWidth = borderPixel;
 							context.strokeStyle = borderColor;
@@ -209,23 +209,23 @@ SkyEngine.Silhouette = CLASS((cls) => {
 				
 				drawArea = self.drawArea = (context) => {
 					
-					if (polygon === undefined) {
+					if (polygonPoints === undefined) {
 						
 						if (imageData !== undefined) {
-							polygon = SkyEngine.Util.ImageData.convertImageDataToPolygon(imageData, width);
+							polygonPoints = SkyEngine.Util.ImageData.convertImageDataToPolygonPoints(imageData, width);
 						}
 					}
 					
-					else if (polygon.length > 0) {
+					else if (polygonPoints.length > 0) {
 						
-						context.moveTo(polygon[0].x - width / 2, polygon[0].y - height / 2);
+						context.moveTo(polygonPoints[0].x - width / 2, polygonPoints[0].y - height / 2);
 						
-						for (let i = 1; i < polygon.length; i += 1) {
-							let point = polygon[i];
+						for (let i = 1; i < polygonPoints.length; i += 1) {
+							let point = polygonPoints[i];
 							context.lineTo(point.x - width / 2, point.y - height / 2);
 						}
 						
-						context.lineTo(polygon[0].x - width / 2, polygon[0].y - height / 2);
+						context.lineTo(polygonPoints[0].x - width / 2, polygonPoints[0].y - height / 2);
 					}
 					
 					origin(context);
@@ -242,18 +242,18 @@ SkyEngine.Silhouette = CLASS((cls) => {
 					
 					imageData = undefined;
 					
-					polygon = undefined;
+					polygonPoints = undefined;
 					
 					origin();
 				};
 			});
 			
-			let getWidth = inner.getWidth = () => {
-				return width;
+			let getImg = inner.getImg = () => {
+				return img;
 			};
 			
-			let getHeight = inner.getHeight = () => {
-				return height;
+			let getPolygonPoints = inner.getPolygonPoints = () => {
+				return polygonPoints;
 			};
 		}
 	};

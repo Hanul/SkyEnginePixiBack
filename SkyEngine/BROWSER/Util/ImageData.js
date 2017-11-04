@@ -11,7 +11,7 @@ SkyEngine('Util').ImageData = OBJECT({
 			return imageData[(y * width + x) * 4 + 3] <= TRANSPARENT_ALPHA;
 		};
 
-		let convertImageDataToPolygon = self.convertImageDataToPolygon = (imageData, width) => {
+		let convertImageDataToPolygonPoints = self.convertImageDataToPolygonPoints = (imageData, width) => {
 			
 			let x = 0;
 			let y = 0;

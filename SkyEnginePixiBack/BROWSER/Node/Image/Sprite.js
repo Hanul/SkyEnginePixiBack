@@ -27,10 +27,12 @@ OVERRIDE(SkyEngine.Sprite, (origin) => {
 					
 					if (src !== undefined) {
 						
-						sprite = new PIXI.Sprite.fromImage(src);
+						let img = inner.getImg();
 						
-						sprite.x = -inner.getWidth() / 2;
-						sprite.y = -inner.getHeight() / 2;
+						sprite = new PIXI.Sprite.fromImage(img.src);
+						
+						sprite.x = -img.width / 2;
+						sprite.y = -img.height / 2;
 						
 						sprite.blendMode = SkyEnginePixiBack.Util.getPixiBlendMode(self.getBlendMode());
 						
@@ -39,14 +41,16 @@ OVERRIDE(SkyEngine.Sprite, (origin) => {
 					
 					if (srcs !== undefined) {
 						
+						let imgs = inner.getImgs();
+						
 						sprites = [];
 						
-						EACH(srcs, (src) => {
+						EACH(imgs, (img) => {
 							
-							sprite = new PIXI.Sprite.fromImage(src);
+							sprite = new PIXI.Sprite.fromImage(img.src);
 							
-							sprite.x = -inner.getWidth() / 2;
-							sprite.y = -inner.getHeight() / 2;
+							sprite.x = -img.width / 2;
+							sprite.y = -img.height / 2;
 							
 							sprite.blendMode = SkyEnginePixiBack.Util.getPixiBlendMode(self.getBlendMode());
 							

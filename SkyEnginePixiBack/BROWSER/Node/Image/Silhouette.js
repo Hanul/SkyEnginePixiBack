@@ -1,6 +1,6 @@
-OVERRIDE(SkyEngine.Image, (origin) => {
+OVERRIDE(SkyEngine.Silhouette, (origin) => {
 	
-	SkyEngine.Image = CLASS({
+	SkyEngine.Silhouette = CLASS({
 		
 		preset : () => {
 			return origin;
@@ -9,6 +9,26 @@ OVERRIDE(SkyEngine.Image, (origin) => {
 		init : (inner, self, params) => {
 			//REQUIRED: params
 			//REQUIRED: params.src
+			//OPTIONAL: params.color
+			//OPTIONAL: params.border
+			
+			let border = params.border;
+			
+			let borderPixel;
+			let borderStyle;
+			let borderColor;
+			
+			let graphics;
+			
+			if (border !== undefined) {
+				let split = border.split(' ');
+				borderPixel = INTEGER(split[0]);
+				borderStyle = split[1];
+				borderColor = split[2];
+				
+				graphics = new PIXI.Graphics();
+				self.addToPixiContainer(graphics);
+			}
 			
 			let sprite;
 			
@@ -26,6 +46,28 @@ OVERRIDE(SkyEngine.Image, (origin) => {
 					sprite.blendMode = SkyEnginePixiBack.Util.getPixiBlendMode(self.getBlendMode());
 					
 					self.addToPixiContainer(sprite);
+					
+					let polygonPoints = inner.getPolygonPoints();
+					
+					if (border !== undefined && polygonPoints.length > 0) {
+						
+						graphics.x = -img.width / 2;
+						graphics.y = -img.height / 2;
+						
+						graphics.lineStyle(borderPixel, parseInt(borderColor.substring(1), 16), 1);
+						
+						let pixiPoints = [];
+						
+						EACH(polygonPoints, (point) => {
+							pixiPoints.push(new PIXI.Point(point.x, point.y));
+						});
+						
+						if (polygonPoints.length > 0) {
+							pixiPoints.push(new PIXI.Point(polygonPoints[0].x, polygonPoints[0].y));
+						}
+						
+						graphics.drawPolygon(pixiPoints);
+					}
 				}
 			});
 			

@@ -43,10 +43,12 @@ OVERRIDE(SkyEngine.Node, (origin) => {
 			
 			let centerGraphics;
 			
+			// 개발 모드에서는 중점 및 영역 표시
 			if (BROWSER_CONFIG.SkyEngine.isDebugMode === true) {
 				
 				centerGraphics = new PIXI.Graphics();
 				
+				// 중점을 그립니다.
 				centerGraphics.lineStyle(1, 0x00FFFF, 1);
 				centerGraphics.drawRect(-1, -1, 2, 2);
 				
@@ -55,8 +57,21 @@ OVERRIDE(SkyEngine.Node, (origin) => {
 				centerGraphics.moveTo(0, -15);
 				centerGraphics.lineTo(0, 15);
 				
-				centerGraphics.zIndex = 999999;
+				// 터치 영역을 그립니다.
+				let touchAreas = self.getTouchAreas();
 				
+				for (let i = 0; i < touchAreas.length; i += 1) {
+					drawAllArea(touchAreas[i], context, '#FF00FF');
+				}
+				
+				// 충돌 영역을 그립니다.
+				let colliders = self.getColliders();
+				
+				for (let i = 0; i < colliders.length; i += 1) {
+					drawAllArea(colliders[i], context, '#00FF00');
+				}
+				
+				centerGraphics.zIndex = 999999;
 				addToPixiContainer(centerGraphics);
 			}
 			

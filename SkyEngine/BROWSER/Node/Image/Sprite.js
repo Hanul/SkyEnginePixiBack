@@ -275,12 +275,12 @@ SkyEngine.Sprite = CLASS({
 			};
 		});
 		
-		let getWidth = inner.getWidth = () => {
-			return width;
+		let getImg = inner.getImg = () => {
+			return img;
 		};
 		
-		let getHeight = inner.getHeight = () => {
-			return height;
+		let getImgs = inner.getImgs = () => {
+			return imgs;
 		};
 	}
 });
