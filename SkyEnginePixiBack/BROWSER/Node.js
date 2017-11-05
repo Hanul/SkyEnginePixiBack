@@ -133,6 +133,8 @@ OVERRIDE(SkyEngine.Node, (origin) => {
 				};
 			});
 			
+			let isFirst = true;
+			
 			let step;
 			OVERRIDE(self.step, (origin) => {
 				
@@ -155,7 +157,7 @@ OVERRIDE(SkyEngine.Node, (origin) => {
 					
 					let domWrapper = inner.getDomWrapper();
 					
-					if (domWrapper !== undefined) {
+					if (self.checkIsRemoved() !== true && domWrapper !== undefined) {
 						
 						let ratio = SkyEngine.Screen.getRatio();
 						
@@ -163,8 +165,10 @@ OVERRIDE(SkyEngine.Node, (origin) => {
 							left : SkyEngine.Screen.getLeft() + (SkyEngine.Screen.getWidth() / 2 + self.getDrawingX()) * ratio - domWrapper.getWidth() / 2,
 							top : SkyEngine.Screen.getTop() + (SkyEngine.Screen.getHeight() / 2 + self.getDrawingY()) * ratio - domWrapper.getHeight() / 2,
 							transform : 'rotate(' + self.getRealRadian() + 'rad) scale(' + ratio * self.getRealScaleX() + ', ' + ratio * self.getRealScaleY() + ')',
-							opacity : self.getAlpha()
+							opacity : isFirst === true ? 0 : pixiContainer.worldAlpha
 						});
+						
+						isFirst = false;
 					}
 				};
 			});

@@ -9,7 +9,7 @@
 * `scale`이 변경되는 경우 자식 노드의 스케일이 [SkyEngine](http://skyengine.uppercase.io/)과는 다르게 동작합니다.
 * `SkyEngine.Background`에서 `leftMargin`, `rightMargin`, `topMargin`, `bottomMargin` 설정을 사용할 수 없습니다.
 * 디버그 모드일 때, `SkyEngine.Silhouette`의 영역이 드로우 되지 않습니다.
-* `SkyEngine.ParticleSystem`는 일부 설정만 사용 가능합니다.
+* `SkyEngine.ParticleSystem`는 일부 설정이 작동하지 않습니다.
 
 ## 설치하기
 프로젝트의 `DEPENDENCY` 파일에 `Hanul/SkyEnginePixiBack`을 추가합니다.
