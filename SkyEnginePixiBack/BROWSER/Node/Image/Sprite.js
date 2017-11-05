@@ -50,7 +50,7 @@ OVERRIDE(SkyEngine.Sprite, (origin) => {
 							frameCount = imageWidth / spriteWidth * imageHeight / spriteHeight;
 						}
 						
-						tilingSprite = new PIXI.TilingSprite.fromImage(img.src, spriteWidth, spriteHeight);
+						tilingSprite = new PIXI.extras.TilingSprite.fromImage(img.src, spriteWidth, spriteHeight);
 						
 						tilingSprite.x = -spriteWidth / 2;
 						tilingSprite.y = -spriteHeight / 2;

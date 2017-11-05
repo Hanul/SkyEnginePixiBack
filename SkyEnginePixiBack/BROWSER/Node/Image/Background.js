@@ -56,7 +56,7 @@ OVERRIDE(SkyEngine.Background, (origin) => {
 					let screenWidth = SkyEngine.Screen.getWidth() / SkyEngine.Screen.getRealScaleX() / self.getRealScaleX();
 					let screenHeight = SkyEngine.Screen.getHeight() / SkyEngine.Screen.getRealScaleY() / self.getRealScaleY();
 					
-					tilingSprite = new PIXI.TilingSprite.fromImage(img.src, screenWidth, screenHeight);
+					tilingSprite = new PIXI.extras.TilingSprite.fromImage(img.src, screenWidth, screenHeight);
 					
 					tilingSprite.anchor.x = 0.5;
 					tilingSprite.anchor.y = 0.5;
@@ -85,11 +85,11 @@ OVERRIDE(SkyEngine.Background, (origin) => {
 						let screenWidth = SkyEngine.Screen.getWidth() / SkyEngine.Screen.getRealScaleX() / self.getRealScaleX();
 						let screenHeight = SkyEngine.Screen.getHeight() / SkyEngine.Screen.getRealScaleY() / self.getRealScaleY();
 						
-						tilingSprite.x = -self.getX();
-						tilingSprite.y = -self.getY();
+						tilingSprite.x = -self.getX() + (SkyEngine.Screen.getCameraFollowX() - SkyEngine.Screen.getX()) / SkyEngine.Screen.getRealScaleX() / self.getRealScaleX();
+						tilingSprite.y = -self.getY() + (SkyEngine.Screen.getCameraFollowY() - SkyEngine.Screen.getY()) / SkyEngine.Screen.getRealScaleY() / self.getRealScaleY();
 						
-						tilingSprite.tilePosition.x = (screenWidth - imageWidth) / 2 + self.getX();
-						tilingSprite.tilePosition.y = (screenHeight - imageHeight) / 2 + self.getY();
+						tilingSprite.tilePosition.x = (screenWidth - imageWidth) / 2 - tilingSprite.x;
+						tilingSprite.tilePosition.y = (screenHeight - imageHeight) / 2 - tilingSprite.y;
 					}
 				};
 			});
