@@ -8,6 +8,10 @@ SkyEnginePixiBack.Util = OBJECT({
 				return PIXI.BLEND_MODES.MULTIPLY;
 			} else if (blendMode === 'screen') {
 				return PIXI.BLEND_MODES.SCREEN;
+			} else if (blendMode === 'lighter') {
+				return PIXI.BLEND_MODES.ADD;
+			} else if (blendMode === 'lighten') {
+				return PIXI.BLEND_MODES.LIGHTEN;
 			}
 			
 			return PIXI.BLEND_MODES.NORMAL;

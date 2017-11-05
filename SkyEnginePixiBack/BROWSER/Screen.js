@@ -333,6 +333,10 @@ OVERRIDE(SkyEngine.Screen, (origin) => {
 				return canvas;
 			};
 			
+			let getPixiRenderer = self.getPixiRenderer = () => {
+				return renderer;
+			};
+			
 			let getCanvasContext = self.getCanvasContext = () => {
 				return renderer.context;
 			};

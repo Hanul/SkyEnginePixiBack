@@ -17,6 +17,10 @@ OVERRIDE(SkyEngine.ParticleSystem, (origin) => {
 				//OPTIONAL: params.particleSrc
 
 				//OPTIONAL: params.particleFigure
+				//OPTIONAL: params.particleStartX
+				//OPTIONAL: params.particleStartY
+				//OPTIONAL: params.particleEndX
+				//OPTIONAL: params.particleEndY
 				//OPTIONAL: params.particleWidth
 				//OPTIONAL: params.particleHeight
 				//OPTIONAL: params.particlePoints
@@ -73,6 +77,10 @@ OVERRIDE(SkyEngine.ParticleSystem, (origin) => {
 				let particleSrc = params.particleSrc;
 				
 				let particleFigure = params.particleFigure;
+				let particleStartX = params.particleStartX;
+				let particleStartY = params.particleStartY;
+				let particleEndX = params.particleEndX;
+				let particleEndY = params.particleEndY;
 				let particleWidth = params.particleWidth;
 				let particleHeight = params.particleHeight;
 				let particlePoints = params.particlePoints;
@@ -265,69 +273,135 @@ OVERRIDE(SkyEngine.ParticleSystem, (origin) => {
 					particleBorderStyle = split[1];
 					particleBorderColor = split[2];
 				}
-
-				let emitter;
-
+				
+				let tecture;
+				
 				if (particleSrc !== undefined) {
-
-					emitter = new PIXI.particles.Emitter(
-						
-						inner.getPixiContainer(),
-						
-						[PIXI.Texture.fromImage(particleSrc)],
-						
-						{
-							alpha : {
-								start : random(minParticleAlpha, maxParticleAlpha),
-								end : random(minParticleAlpha, maxParticleAlpha) + random(minParticleFadingSpeed, maxParticleFadingSpeed) * maxParticleLifetime
-							},
-							scale : {
-								start : random(minParticleScale, maxParticleScale),
-								end : random(minParticleScale, maxParticleScale) + random(minParticleScalingSpeed, maxParticleScalingSpeed) * maxParticleLifetime
-							},
-							color : {
-								start : 'ffffff',
-								end : 'ffffff'
-							},
-							speed : {
-								start : random(minParticleSpeed, maxParticleSpeed),
-								end : random(minParticleSpeed, maxParticleSpeed)
-							},
-							acceleration : {
-								x : particleAccelX,
-								y : particleAccelY
-							},
-							startRotation : {
-								min : minParticleAngle,
-								max : maxParticleAngle === 0 ? 360 : maxParticleAngle
-							},
-							rotationSpeed : {
-								min : minParticleRotationSpeed,
-								max : maxParticleRotationSpeed
-							},
-							lifetime : {
-								min : minParticleLifetime,
-								max : maxParticleLifetime
-							},
-							frequency : 0.008,
-							emitterLifetime : maxParticleLifetime,
-							maxParticles : random(minParticleCount, maxParticleCount),
-							pos : {
-								x : particleCenterX,
-								y : particleCenterY
-							},
-							addAtBack : false,
-							spawnType : 'circle',
-							spawnCircle : {
-								x : 0,
-								y : 0,
-								r : 10
-							}
-						}
-					);
-					
-					emitter.particleBlendMode = SkyEnginePixiBack.Util.getPixiBlendMode(self.getBlendMode());
+					tecture = PIXI.Texture.fromImage(particleSrc);
 				}
+				
+				else {
+					
+					let graphics = new PIXI.Graphics();
+					
+					if (particleBorder !== undefined) {
+						graphics.lineStyle(particleBorderPixel, parseInt(particleBorderColor.substring(1), 16), 1);
+					}
+					
+					if (particleColor !== undefined) {
+						graphics.beginFill(parseInt(particleColor.substring(1), 16));
+					}
+					
+					else {
+						particleColor = RANDOM({
+							min : minParticleColorR,
+							max : maxParticleColorR
+						}) << 16 | RANDOM({
+							min : minParticleColorG,
+							max : maxParticleColorG
+						}) << 8 | RANDOM({
+							min : minParticleColorB,
+							max : maxParticleColorB
+						});
+						
+						graphics.beginFill(particleColor);
+					}
+					
+					if (particleFigure === 'line') {
+						graphics.moveTo(particleCenterX + particleStartX, particleCenterY + particleStartY);
+						graphics.lineTo(particleCenterX + particleEndX, particleCenterY + particleEndY);
+					}
+					
+					else if (particleFigure === 'rect') {
+						graphics.drawRect(particleCenterX - particleWidth / 2, particleCenterX - particleHeight / 2, particleWidth, particleHeight);
+					}
+					
+					else if (particleFigure === 'circle') {
+						graphics.drawEllipse(particleCenterX, particleCenterY, particleWidth / 2, particleHeight / 2);
+					}
+					
+					else if (particleFigure === 'polygon') {
+						
+						if (particlePoints.length > 0) {
+							
+							let pixiPoints = [];
+							
+							EACH(particlePoints, (particlePoint) => {
+								pixiPoints.push(new PIXI.Point(particleCenterX + particlePoint.x, particleCenterY + particlePoint.y));
+							});
+							
+							if (particlePoints.length > 0) {
+								pixiPoints.push(new PIXI.Point(particleCenterX + particlePoints[0].x, particleCenterY + particlePoints[0].y));
+							}
+							
+							graphics.drawPolygon(pixiPoints);
+						}
+					}
+					
+					if (particleColor !== undefined) {
+						graphics.endFill();
+					}
+					
+					tecture = SkyEngine.Screen.getPixiRenderer().generateTexture(graphics);
+				}
+
+				let emitter = new PIXI.particles.Emitter(
+					
+					inner.getPixiContainer(),
+					
+					[tecture],
+					
+					{
+						alpha : {
+							start : random(minParticleAlpha, maxParticleAlpha),
+							end : random(minParticleAlpha, maxParticleAlpha) + random(minParticleFadingSpeed, maxParticleFadingSpeed) * maxParticleLifetime
+						},
+						scale : {
+							start : random(minParticleScale, maxParticleScale),
+							end : random(minParticleScale, maxParticleScale) + random(minParticleScalingSpeed, maxParticleScalingSpeed) * maxParticleLifetime
+						},
+						color : {
+							start : 'ffffff',
+							end : 'ffffff'
+						},
+						speed : {
+							start : random(minParticleSpeed, maxParticleSpeed),
+							end : random(minParticleSpeed, maxParticleSpeed)
+						},
+						acceleration : {
+							x : particleAccelX,
+							y : particleAccelY
+						},
+						startRotation : {
+							min : minParticleAngle,
+							max : maxParticleAngle === 0 ? 360 : maxParticleAngle
+						},
+						rotationSpeed : {
+							min : minParticleRotationSpeed,
+							max : maxParticleRotationSpeed
+						},
+						lifetime : {
+							min : minParticleLifetime,
+							max : maxParticleLifetime
+						},
+						frequency : 0.008,
+						emitterLifetime : maxParticleLifetime,
+						maxParticles : random(minParticleCount, maxParticleCount),
+						pos : {
+							x : particleCenterX,
+							y : particleCenterY
+						},
+						addAtBack : false,
+						spawnType : 'circle',
+						spawnCircle : {
+							x : 0,
+							y : 0,
+							r : 10
+						}
+					}
+				);
+				
+				emitter.particleBlendMode = SkyEnginePixiBack.Util.getPixiBlendMode(self.getBlendMode());
 				
 				let endHandler;
 
