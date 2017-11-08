@@ -135,6 +135,52 @@ OVERRIDE(SkyEngine.Node, (origin) => {
 			
 			let isFirst = true;
 			
+			let addDom;
+			OVERRIDE(self.addDom, (origin) => {
+				
+				addDom = self.addDom = (dom) => {
+					//REQUIRED: dom
+					
+					origin(dom);
+					
+					let domWrapper = inner.getDomWrapper();
+					
+					if (self.checkIsRemoved() !== true && domWrapper !== undefined) {
+						
+						let ratio = SkyEngine.Screen.getRatio();
+						
+						domWrapper.addStyle({
+							left : SkyEngine.Screen.getLeft() + (SkyEngine.Screen.getWidth() / 2 + self.getDrawingX()) * ratio - domWrapper.getWidth() / 2,
+							top : SkyEngine.Screen.getTop() + (SkyEngine.Screen.getHeight() / 2 + self.getDrawingY()) * ratio - domWrapper.getHeight() / 2,
+							transform : 'rotate(' + self.getRealRadian() + 'rad) scale(' + ratio * self.getRealScaleX() + ', ' + ratio * self.getRealScaleY() + ')',
+							opacity : pixiContainer.worldAlpha
+						});
+					}
+				};
+			});
+			
+			let getDomWrapper;
+			OVERRIDE(self.getDomWrapper, (origin) => {
+				
+				getDomWrapper = self.getDomWrapper = () => {
+					//REQUIRED: dom
+					
+					if (self.checkIsRemoved() !== true && domWrapper !== undefined) {
+						
+						let ratio = SkyEngine.Screen.getRatio();
+						
+						domWrapper.addStyle({
+							left : SkyEngine.Screen.getLeft() + (SkyEngine.Screen.getWidth() / 2 + self.getDrawingX()) * ratio - domWrapper.getWidth() / 2,
+							top : SkyEngine.Screen.getTop() + (SkyEngine.Screen.getHeight() / 2 + self.getDrawingY()) * ratio - domWrapper.getHeight() / 2,
+							transform : 'rotate(' + self.getRealRadian() + 'rad) scale(' + ratio * self.getRealScaleX() + ', ' + ratio * self.getRealScaleY() + ')',
+							opacity : pixiContainer.worldAlpha
+						});
+					}
+					
+					return origin();
+				};
+			});
+			
 			let step;
 			OVERRIDE(self.step, (origin) => {
 				
