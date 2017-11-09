@@ -165,6 +165,8 @@ OVERRIDE(SkyEngine.Node, (origin) => {
 				getDomWrapper = self.getDomWrapper = () => {
 					//REQUIRED: dom
 					
+					let domWrapper = inner.getDomWrapper();
+					
 					if (self.checkIsRemoved() !== true && domWrapper !== undefined) {
 						
 						let ratio = SkyEngine.Screen.getRatio();
