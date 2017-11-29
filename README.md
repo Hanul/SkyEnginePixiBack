@@ -10,6 +10,7 @@
 * `SkyEngine.Background`에서 `leftMargin`, `rightMargin`, `topMargin`, `bottomMargin` 설정을 사용할 수 없습니다.
 * 디버그 모드일 때, `SkyEngine.Silhouette`의 영역이 드로우 되지 않습니다.
 * `SkyEngine.ParticleSystem`는 일부 설정이 작동하지 않습니다.
+* 현재 `filter` 설정으로 `grayscale`과 `saturate`만 지원됩니다. 추가로 필터가 필요한 경우 [Issues](https://github.com/Hanul/SkyEnginePixiBack/issues)에 남겨주시기 바랍니다.
 
 ## 설치하기
 프로젝트의 `DEPENDENCY` 파일에 `Hanul/SkyEnginePixiBack`을 추가합니다.

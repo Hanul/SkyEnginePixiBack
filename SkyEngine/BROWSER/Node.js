@@ -55,6 +55,7 @@ SkyEngine.Node = CLASS({
 		//OPTIONAL: params.maxFadingSpeed		최대 페이드 속도
 		//OPTIONAL: params.toAlpha				페이드 알파 값 목적지
 		
+		//OPTIONAL: params.filter
 		//OPTIONAL: params.blendMode
 
 		//OPTIONAL: params.collider				충돌 영역. 하나의 영역을 지정하거나, 영역들의 배열을 지정할 수 있습니다.
@@ -63,6 +64,7 @@ SkyEngine.Node = CLASS({
 		//OPTIONAL: params.domStyle
 		//OPTIONAL: params.dom
 		//OPTIONAL: params.on					이벤트
+		//OPTIONAL: params.onDisplayResize
 
 		// properties
 		let x, y, zIndex, centerX, centerY, scaleX, scaleY, angle, alpha;
@@ -109,6 +111,7 @@ SkyEngine.Node = CLASS({
 
 		let partHandlerMap = {};
 
+		let filter;
 		let blendMode;
 
 		let isStuckLeft;
@@ -116,9 +119,12 @@ SkyEngine.Node = CLASS({
 		let isStuckUp;
 		let isStuckDown;
 		
-		let isPaused;
+		let pauseCount = 0;
 		
 		let domWrapper;
+		
+		let onDisplayResize;
+		let displayResizeEvent;
 
 		let genRealPosition = () => {
 
@@ -776,7 +782,10 @@ SkyEngine.Node = CLASS({
 				isHiding = params.isHiding;
 			}
 			
+			filter = params.filter;
 			blendMode = params.blendMode;
+			
+			onDisplayResize = params.onDisplayResize;
 		}
 
 		// 초기화 되지 않은 파라미터에 기본값 지정
@@ -846,11 +855,38 @@ SkyEngine.Node = CLASS({
 		if (fadingAccel === undefined) {
 			fadingAccel = 0;
 		}
+		
+		if (onDisplayResize !== undefined) {
+			displayResizeEvent = EVENT('resize', RAR(() => {
+				let result = onDisplayResize();
+				
+				if (result.x !== undefined) {
+					setX(result.x);
+				}
+				if (result.y !== undefined) {
+					setY(result.y);
+				}
+			}));
+		}
 
 		// 노드 등록
 		if (SkyEngine.Screen !== self) {
 			SkyEngine.Screen.registerNode(self);
 		}
+
+		let setFilter = self.setFilter = (_filter) => {
+			//REQUIRED: filter
+
+			filter = _filter;
+		};
+
+		let getFilter = self.getFilter = () => {
+			return filter;
+		};
+
+		let removeFilter = self.removeFilter = () => {
+			filter = undefined;
+		};
 
 		let setBlendMode = self.setBlendMode = (_blendMode) => {
 			//REQUIRED: blendMode
@@ -1075,8 +1111,18 @@ SkyEngine.Node = CLASS({
 				}
 
 				if (params.maxSpeed !== undefined) {
-					maxSpeedX = params.maxSpeed * dx / length;
-					maxSpeedY = params.maxSpeed * dy / length;
+					
+					if (toX < x) {
+						minSpeedX = -params.maxSpeed * dx / length;
+					} else {
+						maxSpeedX = params.maxSpeed * dx / length;
+					}
+					
+					if (toY < y) {
+						minSpeedY = -params.maxSpeed * dy / length;
+					} else {
+						maxSpeedY = params.maxSpeed * dy / length;
+					}
 				}
 				
 				moveEndHandler = _moveEndHandler;
@@ -1089,7 +1135,6 @@ SkyEngine.Node = CLASS({
 			//OPTIONAL: params.y
 			//OPTIONAL: params.speed
 			//OPTIONAL: params.accel
-			//OPTIONAL: params.minSpeed
 			//OPTIONAL: params.maxSpeed
 			//OPTIONAL: scaleEndHandler
 			
@@ -1101,12 +1146,30 @@ SkyEngine.Node = CLASS({
 			if (params.y === undefined) {
 				
 				toScaleX = params.x;
-				scalingSpeedX = speed;
-				if (accel !== undefined) {
-					scalingAccelX = accel;
+				
+				if (toScaleX < scaleX) {
+					if (speed !== undefined) {
+						scalingSpeedX = -speed;
+					}
+					if (accel !== undefined) {
+						scalingAccelX = -accel;
+					}
+					if (maxSpeed !== undefined) {
+						minScalingSpeedX = -maxSpeed;
+					}
 				}
-				minScalingSpeedX = minSpeed;
-				maxScalingSpeedX = maxSpeed;
+				
+				else {
+					if (speed !== undefined) {
+						scalingSpeedX = speed;
+					}
+					if (accel !== undefined) {
+						scalingAccelX = accel;
+					}
+					if (maxSpeed !== undefined) {
+						maxScalingSpeedX = maxSpeed;
+					}
+				}
 				
 				scaleXEndHandler = _scaleEndHandler;
 			}
@@ -1114,12 +1177,30 @@ SkyEngine.Node = CLASS({
 			else if (params.x === undefined) {
 				
 				toScaleY = params.y;
-				scalingSpeedY = speed;
-				if (accel !== undefined) {
-					scalingAccelY = accel;
+				
+				if (toScaleY < scaleY) {
+					if (speed !== undefined) {
+						scalingSpeedY = -speed;
+					}
+					if (accel !== undefined) {
+						scalingAccelY = -accel;
+					}
+					if (maxSpeed !== undefined) {
+						minScalingSpeedY = -maxSpeed;
+					}
 				}
-				minScalingSpeedY = minSpeed;
-				maxScalingSpeedY = maxSpeed;
+				
+				else {
+					if (speed !== undefined) {
+						scalingSpeedY = speed;
+					}
+					if (accel !== undefined) {
+						scalingAccelY = accel;
+					}
+					if (maxSpeed !== undefined) {
+						maxScalingSpeedY = maxSpeed;
+					}
+				}
 				
 				scaleYEndHandler = _scaleEndHandler;
 			}
@@ -1127,17 +1208,56 @@ SkyEngine.Node = CLASS({
 			else {
 				
 				toScaleX = params.x;
-				toScaleY = params.y;
-				scalingSpeedX = speed;
-				scalingSpeedY = speed;
-				if (accel !== undefined) {
-					scalingAccelX = accel;
-					scalingAccelY = accel;
+				
+				if (toScaleX < scaleX) {
+					if (speed !== undefined) {
+						scalingSpeedX = -speed;
+					}
+					if (accel !== undefined) {
+						scalingAccelX = -accel;
+					}
+					if (maxSpeed !== undefined) {
+						minScalingSpeedX = -maxSpeed;
+					}
 				}
-				minScalingSpeedX = minSpeed;
-				minScalingSpeedY = minSpeed;
-				maxScalingSpeedX = maxSpeed;
-				maxScalingSpeedY = maxSpeed;
+				
+				else {
+					if (speed !== undefined) {
+						scalingSpeedX = speed;
+					}
+					if (accel !== undefined) {
+						scalingAccelX = accel;
+					}
+					if (maxSpeed !== undefined) {
+						maxScalingSpeedX = maxSpeed;
+					}
+				}
+				
+				toScaleY = params.y;
+				
+				if (toScaleY < scaleY) {
+					if (speed !== undefined) {
+						scalingSpeedY = -speed;
+					}
+					if (accel !== undefined) {
+						scalingAccelY = -accel;
+					}
+					if (maxSpeed !== undefined) {
+						minScalingSpeedY = -maxSpeed;
+					}
+				}
+				
+				else {
+					if (speed !== undefined) {
+						scalingSpeedY = speed;
+					}
+					if (accel !== undefined) {
+						scalingAccelY = accel;
+					}
+					if (maxSpeed !== undefined) {
+						maxScalingSpeedY = maxSpeed;
+					}
+				}
 				
 				scaleEndHandler = _scaleEndHandler;
 			}
@@ -1566,6 +1686,11 @@ SkyEngine.Node = CLASS({
 			}
 
 			isRemoved = true;
+			
+			if (displayResizeEvent !== undefined) {
+				displayResizeEvent.remove();
+				displayResizeEvent = undefined;
+			}
 		};
 
 		let checkIsRemoved = self.checkIsRemoved = () => {
@@ -1988,7 +2113,7 @@ SkyEngine.Node = CLASS({
 
 		let step = self.step = (deltaTime) => {
 			
-			if (isPaused !== true) {
+			if (pauseCount === 0) {
 				
 				beforeX = x;
 				beforeY = y;
@@ -2088,7 +2213,13 @@ SkyEngine.Node = CLASS({
 						if (toX !== undefined) {
 	
 							if ((speedX > 0 && x > toX) || (speedX < 0 && x < toX)) {
+								
 								x = toX;
+								
+								toX = undefined;
+								minSpeedX = undefined;
+								maxSpeedX = undefined;
+								
 								speedX = 0;
 								accelX = 0;
 								
@@ -2111,9 +2242,9 @@ SkyEngine.Node = CLASS({
 				if (speedY !== 0) {
 	
 					let dy = speedY * deltaTime;
-	
+					
 					if ((dy < 0 && isStuckUp !== true) || (dy > 0 && isStuckDown !== true)) {
-	
+
 						y += dy;
 	
 						if (toY !== undefined) {
@@ -2121,6 +2252,11 @@ SkyEngine.Node = CLASS({
 							if ((speedY > 0 && y > toY) || (speedY < 0 && y < toY)) {
 								
 								y = toY;
+								
+								toY = undefined;
+								minSpeedY = undefined;
+								maxSpeedY = undefined;
+								
 								speedY = 0;
 								accelY = 0;
 								
@@ -2170,14 +2306,20 @@ SkyEngine.Node = CLASS({
 					if (toScaleX !== undefined) {
 	
 						if ((scalingSpeedX > 0 && scaleX > toScaleX) || (scalingSpeedX < 0 && scaleX < toScaleX)) {
+							
 							scaleX = toScaleX;
+							
+							toScaleX = undefined;
+							minScalingSpeedX = undefined;
+							maxScalingSpeedX = undefined;
+							
 							scalingSpeedX = 0;
 							scalingAccelX = 0;
 							
-							if (scaleYEndHandler !== undefined) {
-								let _scaleYEndHandler = scaleYEndHandler;
-								scaleYEndHandler = undefined;
-								_scaleYEndHandler();
+							if (scaleXEndHandler !== undefined) {
+								let _scaleXEndHandler = scaleXEndHandler;
+								scaleXEndHandler = undefined;
+								_scaleXEndHandler();
 							}
 							
 							if (scaleEndHandler !== undefined && scalingSpeedY === 0) {
@@ -2195,7 +2337,13 @@ SkyEngine.Node = CLASS({
 					if (toScaleY !== undefined) {
 						
 						if ((scalingSpeedY > 0 && scaleY > toScaleY) || (scalingSpeedY < 0 && scaleY < toScaleY)) {
+							
 							scaleY = toScaleY;
+							
+							toScaleY = undefined;
+							minScalingSpeedY = undefined;
+							maxScalingSpeedY = undefined;
+							
 							scalingSpeedY = 0;
 							scalingAccelY = 0;
 							
@@ -2232,7 +2380,13 @@ SkyEngine.Node = CLASS({
 					if (toAngle !== undefined) {
 	
 						if (angle + toAngle < 360 && ((rotationSpeed > 0 && angle >= toAngle) || (rotationSpeed < 0 && angle <= toAngle))) {
+							
 							angle = toAngle;
+							
+							toAngle = undefined;
+							minRotationSpeed = undefined;
+							maxRotationSpeed = undefined;
+							
 							rotationSpeed = 0;
 							rotationAccel = 0;
 							
@@ -2269,7 +2423,13 @@ SkyEngine.Node = CLASS({
 					if (toAlpha !== undefined) {
 	
 						if ((fadingSpeed > 0 && alpha > toAlpha) || (fadingSpeed < 0 && alpha < toAlpha)) {
+							
 							alpha = toAlpha;
+							
+							toAlpha = undefined;
+							minFadingSpeed = undefined;
+							maxFadingSpeed = undefined;
+							
 							fadingSpeed = 0;
 							fadingAccel = 0;
 							
@@ -2343,7 +2503,8 @@ SkyEngine.Node = CLASS({
 					left : SkyEngine.Screen.getLeft() + (SkyEngine.Screen.getWidth() / 2 + drawingX) * ratio - domWrapper.getWidth() / 2,
 					top : SkyEngine.Screen.getTop() + (SkyEngine.Screen.getHeight() / 2 + drawingY) * ratio - domWrapper.getHeight() / 2,
 					transform : 'rotate(' + realRadian + 'rad) scale(' + ratio * realScaleX + ', ' + ratio * realScaleY + ')',
-					opacity : context.globalAlpha
+					opacity : context.globalAlpha,
+					filter : context.filter
 				});
 			}
 		};
@@ -2353,15 +2514,20 @@ SkyEngine.Node = CLASS({
 		};
 		
 		let pause = self.pause = () => {
-			isPaused = true;
+			pauseCount += 1;
 		};
 		
 		let checkIsPaused = self.checkIsPaused = () => {
-			return isPaused;
+			return pauseCount > 0;
 		};
 		
 		let resume = self.resume = () => {
-			isPaused = false;
+			
+			pauseCount -= 1;
+			
+			if (pauseCount < 0) {
+				pauseCount = 0;
+			}
 		};
 
 		genRealProperties();

@@ -124,7 +124,7 @@ SkyEngine.Screen = OBJECT({
 						
 						if (
 						node.checkIsEventExists(eventName) === true &&
-						node.checkTouch(e.getLeft() - width / 2, e.getTop() - height / 2) === true) {
+						node.checkTouch((e.getLeft() - WIN_WIDTH() / 2) / ratio, (e.getTop() - WIN_HEIGHT() / 2) / ratio) === true) {
 							
 							let se = SkyEngine.E(e);
 							
@@ -180,6 +180,10 @@ SkyEngine.Screen = OBJECT({
 				realAlpha *= node.getAlpha();
 				
 				context.save();
+				
+				if (node.getFilter() !== undefined) {
+					context.filter = node.getFilter();
+				}
 				
 				if (node.getBlendMode() !== undefined) {
 					context.globalCompositeOperation = node.getBlendMode();
@@ -260,6 +264,8 @@ SkyEngine.Screen = OBJECT({
 				// 모든 노드의 step을 실행합니다.
 				self.step(deltaTime);
 			}
+			
+			nonePausableNode.step(deltaTime);
 			
 			// 모든 노드를 그립니다.
 			context.clearRect(0, 0, width * devicePixelRatio, height * devicePixelRatio);
@@ -442,6 +448,12 @@ SkyEngine.Screen = OBJECT({
 		
 		let getCanvasContext = self.getCanvasContext = () => {
 			return context;
+		};
+		
+		let nonePausableNode = SkyEngine.Node();
+		
+		let getNonePausableNode = self.getNonePausableNode = () => {
+			return nonePausableNode;
 		};
 	}
 });

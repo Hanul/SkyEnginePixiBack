@@ -183,6 +183,11 @@ OVERRIDE(SkyEngine.Node, (origin) => {
 				};
 			});
 			
+			let pixiFilter;
+			
+			let cachedFilter;
+			let cachedPixiFilter;
+			
 			let step;
 			OVERRIDE(self.step, (origin) => {
 				
@@ -199,6 +204,42 @@ OVERRIDE(SkyEngine.Node, (origin) => {
 					pixiContainer.alpha = self.getAlpha();
 					pixiContainer.visible = self.checkIsHiding() !== true;
 					
+					let filter = self.getFilter();
+					
+					if (pixiFilter === undefined && filter !== undefined) {
+						
+						if (filter === cachedFilter) {
+							pixiFilter = cachedPixiFilter;
+							
+							pixiContainer.filters = [pixiFilter];
+							
+							filter = cachedFilter;
+						}
+						
+						else if (filter.indexOf('grayscale(') !== -1) {
+							pixiFilter = cachedPixiFilter = new PIXI.filters.ColorMatrixFilter();
+							pixiFilter.desaturate(filter.substring(10, filter.indexOf('%')) / 100);
+							
+							pixiContainer.filters = [pixiFilter];
+							
+							cachedFilter = filter;
+						}
+						
+						else if (filter.indexOf('saturate(') !== -1) {
+							pixiFilter = cachedPixiFilter = new PIXI.filters.ColorMatrixFilter();
+							pixiFilter.saturate(filter.substring(9, filter.indexOf(')')) / 100);
+							
+							pixiContainer.filters = [pixiFilter];
+							
+							cachedFilter = filter;
+						}
+					}
+					
+					if (pixiFilter !== undefined && filter === undefined) {
+						pixiContainer.filters = TO_DELETE;
+						pixiFilter = undefined;
+					}
+					
 					if (centerGraphics !== undefined) {
 						centerGraphics.x = self.getCenterX();
 						centerGraphics.y = self.getCenterY();
@@ -214,7 +255,8 @@ OVERRIDE(SkyEngine.Node, (origin) => {
 							left : SkyEngine.Screen.getLeft() + (SkyEngine.Screen.getWidth() / 2 + self.getDrawingX()) * ratio - domWrapper.getWidth() / 2,
 							top : SkyEngine.Screen.getTop() + (SkyEngine.Screen.getHeight() / 2 + self.getDrawingY()) * ratio - domWrapper.getHeight() / 2,
 							transform : 'rotate(' + self.getRealRadian() + 'rad) scale(' + ratio * self.getRealScaleX() + ', ' + ratio * self.getRealScaleY() + ')',
-							opacity : isFirst === true ? 0 : pixiContainer.worldAlpha
+							opacity : isFirst === true ? 0 : pixiContainer.worldAlpha,
+							filter : self.getFilter()
 						});
 						
 						isFirst = false;

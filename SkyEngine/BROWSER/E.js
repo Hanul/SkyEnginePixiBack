@@ -27,11 +27,11 @@ SkyEngine.E = CLASS({
 		};
 
 		let getX = self.getX = () => {
-			return e.getLeft() - SkyEngine.Screen.getWidth() / 2;
+			return (e.getLeft() - WIN_WIDTH() / 2) / SkyEngine.Screen.getRatio();
 		};
 
 		let getY = self.getY = () => {
-			return e.getTop() - SkyEngine.Screen.getHeight() / 2;
+			return (e.getTop() - WIN_HEIGHT() / 2) / SkyEngine.Screen.getRatio();
 		};
 
 		let getKey = self.getKey = () => {

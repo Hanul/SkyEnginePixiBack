@@ -580,10 +580,6 @@ SkyEngine.ParticleSystem = CLASS(() => {
 					origin();
 				};
 			});
-			
-			let getParticleInfos = inner.getParticleInfos = () => {
-				return particleInfos;
-			};
 		}
 	};
 });
