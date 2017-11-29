@@ -195,6 +195,7 @@ OVERRIDE(SkyEngine.Node, (origin) => {
 					pixiContainer.scale.set(self.getScaleX(), self.getScaleY());
 					pixiContainer.rotation = self.getAngle() * Math.PI / 180;
 					pixiContainer.alpha = self.getAlpha();
+					pixiContainer.visible = self.checkIsHiding() !== true;
 					
 					if (centerGraphics !== undefined) {
 						centerGraphics.x = self.getCenterX();

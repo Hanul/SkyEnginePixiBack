@@ -166,6 +166,8 @@ OVERRIDE(SkyEngine.Screen, (origin) => {
 					self.step(deltaTime);
 				}
 				
+				nonePausableNode.step(deltaTime);
+				
 				stage.x = width / 2 - getCameraFollowX();
 				stage.y = height / 2 - getCameraFollowY();
 				
@@ -339,6 +341,12 @@ OVERRIDE(SkyEngine.Screen, (origin) => {
 			
 			let getCanvasContext = self.getCanvasContext = () => {
 				return renderer.context;
+			};
+			
+			let nonePausableNode = SkyEngine.Node();
+			
+			let getNonePausableNode = self.getNonePausableNode = () => {
+				return nonePausableNode;
 			};
 		}
 	});
