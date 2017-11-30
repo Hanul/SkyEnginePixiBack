@@ -14,6 +14,9 @@ OVERRIDE(SkyEngine.Figure, (origin) => {
 			let color = params.color;
 			let border = params.border;
 			
+			let width = params.width;
+			let height = params.height;
+			
 			let borderPixel;
 			let borderStyle;
 			let borderColor;
@@ -36,12 +39,55 @@ OVERRIDE(SkyEngine.Figure, (origin) => {
 				}
 				
 				if (color !== undefined) {
-					graphics.beginFill(parseInt(color.substring(1), 16));
+					
+					if (CHECK_IS_DATA(color) === true) {
+						
+						if (width !== undefined && height !== undefined) {
+							
+							let gradientParams = color;
+							
+							let canvas = document.createElement('canvas');
+							canvas.width = width;
+							canvas.height = height;
+							
+							var context = canvas.getContext('2d');
+	
+							let contextGradient;
+							
+							if (gradientParams.type === 'radial') {
+								contextGradient = context.createRadialGradient(gradientParams.startX + width / 2, gradientParams.startY + height / 2, gradientParams.startRadius, gradientParams.endX + width / 2, gradientParams.endY + height / 2, gradientParams.endRadius);
+							} else {
+								contextGradient = context.createLinearGradient(gradientParams.startX + width / 2, gradientParams.startY + height / 2, gradientParams.endX + width / 2, gradientParams.endY + height / 2);
+							}
+							
+							EACH(gradientParams.colors, (color, i) => {
+								contextGradient.addColorStop(i / (gradientParams.colors.length - 1), color);
+							});
+							
+							if (self.checkIsInstanceOf(SkyEngine.Circle) === true) {
+								context.ellipse(width / 2, height / 2, width / 2, height / 2, 0, 0, 2 * Math.PI);
+							} else {
+								context.rect(0, 0, width, height);
+							}
+							context.fillStyle = contextGradient;
+							context.fill();
+							
+							let sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
+							sprite.x = -width / 2;
+							sprite.y = -height / 2;
+							
+							graphics.addChild(sprite);
+						}
+					}
+					
+					else {
+						graphics.beginFill(parseInt(color.substring(1), 16));
+					}
 				}
 				
 				f(graphics);
 				
-				if (color !== undefined) {
+				if (color !== undefined && CHECK_IS_DATA(color) !== true) {
 					graphics.endFill();
 				}
 			};
