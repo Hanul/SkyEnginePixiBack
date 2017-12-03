@@ -10,6 +10,7 @@ OVERRIDE(SkyEngine.Node, (origin) => {
 			
 			let pixiContainer = new PIXI.Container();
 			pixiContainer.zIndex = self.getZIndex();
+			pixiContainer.worldAlpha = 0;
 			
 			let getPixiContainer = inner.getPixiContainer = () => {
 				return pixiContainer;
