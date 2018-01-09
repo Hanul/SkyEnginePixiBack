@@ -153,7 +153,13 @@ OVERRIDE(SkyEngine.Node, (origin) => {
 							left : SkyEngine.Screen.getLeft() + (SkyEngine.Screen.getWidth() / 2 + self.getDrawingX()) * ratio - domWrapper.getWidth() / 2,
 							top : SkyEngine.Screen.getTop() + (SkyEngine.Screen.getHeight() / 2 + self.getDrawingY()) * ratio - domWrapper.getHeight() / 2,
 							transform : 'rotate(' + self.getRealRadian() + 'rad) scale(' + ratio * self.getRealScaleX() + ', ' + ratio * self.getRealScaleY() + ')',
-							opacity : pixiContainer.worldAlpha
+							opacity : 0
+						});
+						
+						DELAY(() => {
+							domWrapper.addStyle({
+								opacity : pixiContainer.worldAlpha
+							});
 						});
 					}
 				};
@@ -175,7 +181,13 @@ OVERRIDE(SkyEngine.Node, (origin) => {
 							left : SkyEngine.Screen.getLeft() + (SkyEngine.Screen.getWidth() / 2 + self.getDrawingX()) * ratio - domWrapper.getWidth() / 2,
 							top : SkyEngine.Screen.getTop() + (SkyEngine.Screen.getHeight() / 2 + self.getDrawingY()) * ratio - domWrapper.getHeight() / 2,
 							transform : 'rotate(' + self.getRealRadian() + 'rad) scale(' + ratio * self.getRealScaleX() + ', ' + ratio * self.getRealScaleY() + ')',
-							opacity : pixiContainer.worldAlpha
+							opacity : 0
+						});
+						
+						DELAY(() => {
+							domWrapper.addStyle({
+								opacity : pixiContainer.worldAlpha
+							});
 						});
 					}
 					
