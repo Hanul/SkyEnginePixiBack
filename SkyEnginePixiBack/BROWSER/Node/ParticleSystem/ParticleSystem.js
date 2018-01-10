@@ -274,10 +274,10 @@ OVERRIDE(SkyEngine.ParticleSystem, (origin) => {
 					particleBorderColor = split[2];
 				}
 				
-				let tecture;
+				let texture;
 				
 				if (particleSrc !== undefined) {
-					tecture = PIXI.Texture.fromImage(particleSrc);
+					texture = PIXI.Texture.fromImage(particleSrc);
 				}
 				
 				else {
@@ -342,14 +342,17 @@ OVERRIDE(SkyEngine.ParticleSystem, (origin) => {
 						graphics.endFill();
 					}
 					
-					tecture = SkyEngine.Screen.getPixiRenderer().generateTexture(graphics);
+					texture = SkyEngine.Screen.getPixiRenderer().generateTexture(graphics);
+					
+					graphics.destroy();
+					graphics = undefined;
 				}
 
 				let emitter = new PIXI.particles.Emitter(
 					
 					inner.getPixiContainer(),
 					
-					[tecture],
+					[texture],
 					
 					{
 						alpha : {
@@ -424,6 +427,7 @@ OVERRIDE(SkyEngine.ParticleSystem, (origin) => {
 					
 					remove = self.remove = () => {
 						
+						emitter.destroy();
 						emitter = undefined;
 						
 						endHandler = undefined;
