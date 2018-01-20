@@ -18,7 +18,7 @@ OVERRIDE(SkyEngine.Circle, (origin) => {
 				let height = params.height;
 				
 				inner.drawGraphics((graphics) => {
-					graphics.drawEllipse(0, 0, width / 2, height / 2);
+					graphics.drawEllipse(self.getX(), self.getY(), width / 2, height / 2);
 				});
 				
 				let drawPixiArea;
@@ -26,7 +26,7 @@ OVERRIDE(SkyEngine.Circle, (origin) => {
 					
 					drawPixiArea = self.drawPixiArea = (graphics) => {
 						
-						graphics.drawEllipse(0, 0, width / 2, height / 2);
+						graphics.drawEllipse(self.getX(), self.getY(), width / 2, height / 2);
 						
 						origin(graphics);
 					};

@@ -37,8 +37,8 @@ OVERRIDE(SkyEngine.Line, (origin) => {
 				}
 				
 				inner.drawGraphics((graphics) => {
-					graphics.moveTo(startX, startY);
-					graphics.lineTo(endX, endY);
+					graphics.moveTo(self.getX() + startX, self.getY() + startY);
+					graphics.lineTo(self.getX() + endX, self.getY() + endY);
 				});
 				
 				let drawPixiArea;
@@ -46,8 +46,8 @@ OVERRIDE(SkyEngine.Line, (origin) => {
 					
 					drawPixiArea = self.drawPixiArea = (graphics) => {
 						
-						graphics.moveTo(startX, startY);
-						graphics.lineTo(endX, endY);
+						graphics.moveTo(self.getX() + startX, self.getY() + startY);
+						graphics.lineTo(self.getX() + endX, self.getY() + endY);
 						
 						origin(graphics);
 					};

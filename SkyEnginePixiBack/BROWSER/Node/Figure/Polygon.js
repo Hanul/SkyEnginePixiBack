@@ -20,11 +20,11 @@ OVERRIDE(SkyEngine.Polygon, (origin) => {
 					let pixiPoints = [];
 					
 					EACH(points, (point) => {
-						pixiPoints.push(new PIXI.Point(point.x, point.y));
+						pixiPoints.push(new PIXI.Point(self.getX() + point.x, self.getY() + point.y));
 					});
 					
 					if (points.length > 0) {
-						pixiPoints.push(new PIXI.Point(points[0].x, points[0].y));
+						pixiPoints.push(new PIXI.Point(self.getX() + points[0].x, self.getY() + points[0].y));
 					}
 					
 					graphics.drawPolygon(pixiPoints);
@@ -38,11 +38,11 @@ OVERRIDE(SkyEngine.Polygon, (origin) => {
 						let pixiPoints = [];
 						
 						EACH(points, (point) => {
-							pixiPoints.push(new PIXI.Point(point.x, point.y));
+							pixiPoints.push(new PIXI.Point(self.getX() + point.x, self.getY() + point.y));
 						});
 						
 						if (points.length > 0) {
-							pixiPoints.push(new PIXI.Point(points[0].x, points[0].y));
+							pixiPoints.push(new PIXI.Point(self.getX() + points[0].x, self.getY() + points[0].y));
 						}
 						
 						graphics.drawPolygon(pixiPoints);

@@ -18,7 +18,7 @@ OVERRIDE(SkyEngine.Rect, (origin) => {
 				let height = params.height;
 				
 				inner.drawGraphics((graphics) => {
-					graphics.drawRect(-width / 2, -height / 2, width, height);
+					graphics.drawRect(self.getX() - width / 2, self.getY() - height / 2, width, height);
 				});
 				
 				let drawPixiArea;
@@ -26,7 +26,7 @@ OVERRIDE(SkyEngine.Rect, (origin) => {
 					
 					drawPixiArea = self.drawPixiArea = (graphics) => {
 						
-						graphics.drawRect(-width / 2, -height / 2, width, height);
+						graphics.drawRect(self.getX() - width / 2, self.getY() - height / 2, width, height);
 						
 						origin(graphics);
 					};
