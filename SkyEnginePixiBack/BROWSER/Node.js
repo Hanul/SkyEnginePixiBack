@@ -111,7 +111,7 @@ OVERRIDE(SkyEngine.Node, (origin) => {
 					
 					pixiContainer.zIndex = zIndex;
 					
-					let parentNode = getParent();
+					let parentNode = self.getParent();
 					
 					if (parentNode !== undefined) {
 						parentNode.removeFromPixiContainer(self);
@@ -127,7 +127,10 @@ OVERRIDE(SkyEngine.Node, (origin) => {
 				appendTo = self.appendTo = (node) => {
 					//REQUIRED: node
 					
-					node.addToPixiContainer(pixiContainer);
+					// BUG FIX
+					if (node !== undefined) {
+						node.addToPixiContainer(pixiContainer);
+					}
 					
 					return origin(node);
 				};
