@@ -18,7 +18,7 @@ OVERRIDE(SkyEngine.Screen, (origin) => {
 			}).appendTo(BODY);
 			
 			let canvas = CANVAS().appendTo(wrapper);
-			let renderer = new PIXI.WebGLRenderer({
+			let renderer = new PIXI.autoDetectRenderer({
 				view : canvas.getEl()
 			});
 			
