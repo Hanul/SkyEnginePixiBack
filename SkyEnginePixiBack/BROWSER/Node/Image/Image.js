@@ -29,6 +29,14 @@ OVERRIDE(SkyEngine.Image, (origin) => {
 				}
 			});
 			
+			let setSrc;
+			OVERRIDE(self.setSrc, (origin) => {
+				
+				setSrc = self.setSrc = () => {
+					// TODO: 작성해야 함
+				};
+			});
+			
 			let setBlendMode;
 			OVERRIDE(self.setBlendMode, (origin) => {
 				

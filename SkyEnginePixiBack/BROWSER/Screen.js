@@ -268,7 +268,7 @@ OVERRIDE(SkyEngine.Screen, (origin) => {
 				cameraMaxFollowX = params.maxX;
 			};
 			
-			let cameraFollowY = self.cameraFollowY = (node) => {
+			let cameraFollowY = self.cameraFollowY = (params) => {
 				//REQUIRED: params
 				//REQUIRED: params.target
 				//OPTIONAL: params.centerY
@@ -286,7 +286,7 @@ OVERRIDE(SkyEngine.Screen, (origin) => {
 				cameraMaxFollowY = params.maxY;
 			};
 			
-			let cameraFollow = self.cameraFollow = (node) => {
+			let cameraFollow = self.cameraFollow = (params) => {
 				//REQUIRED: params
 				//REQUIRED: params.target
 				//OPTIONAL: params.centerX
