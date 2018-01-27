@@ -66,6 +66,14 @@ OVERRIDE(SkyEngine.Image, (origin) => {
 					origin();
 				};
 			});
+			
+			let crop;
+			OVERRIDE(self.crop, (origin) => {
+				
+				crop = self.crop = () => {
+					// TODO: 작성해야 함
+				};
+			});
 		}
 	});
 });
