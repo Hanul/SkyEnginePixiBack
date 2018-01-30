@@ -11,7 +11,6 @@ OVERRIDE(SkyEngine.Background, (origin) => {
 			//REQUIRED: params.src
 			//OPTIONAL: params.isNotToRepeatX
 			//OPTIONAL: params.isNotToRepeatY
-			//OPTIONAL: params.followScreenRatio
 			//OPTIONAL: params.leftMargin
 			//OPTIONAL: params.rightMargin
 			//OPTIONAL: params.topMargin
@@ -20,15 +19,10 @@ OVERRIDE(SkyEngine.Background, (origin) => {
 			let src = params.src;
 			let isNotToRepeatX = params.isNotToRepeatX;
 			let isNotToRepeatY = params.isNotToRepeatY;
-			let followScreenRatio = params.followScreenRatio;
 			let leftMargin = params.leftMargin;
 			let rightMargin = params.rightMargin;
 			let topMargin = params.topMargin;
 			let bottomMargin = params.bottomMargin;
-			
-			if (followScreenRatio === undefined) {
-				followScreenRatio = 0;
-			}
 			
 			if (leftMargin === undefined) {
 				leftMargin = 0;
