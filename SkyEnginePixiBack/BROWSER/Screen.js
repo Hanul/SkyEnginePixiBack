@@ -93,7 +93,7 @@ OVERRIDE(SkyEngine.Screen, (origin) => {
 				}
 			};
 			
-			let getRegisteredNodes = self.getRegisteredNodes = (cls) => {
+			let findNodesByClass = self.findNodesByClass = (cls) => {
 				return registeredNodeMap[cls.id] === undefined ? [] : registeredNodeMap[cls.id];
 			};
 			
@@ -176,8 +176,8 @@ OVERRIDE(SkyEngine.Screen, (origin) => {
 				
 				nonePausableNode.step(deltaTime);
 				
-				stage.x = width / 2 - getCameraFollowX();
-				stage.y = height / 2 - getCameraFollowY();
+				stage.x = width / 2 - getCameraFollowingX();
+				stage.y = height / 2 - getCameraFollowingY();
 				
 				renderer.render(stage);
 			});
@@ -300,24 +300,24 @@ OVERRIDE(SkyEngine.Screen, (origin) => {
 				cameraFollowY(params);
 			};
 			
-			let cameraUnfollowX = self.cameraUnfollowX = (node) => {
+			let cameraUnfollowX = self.cameraUnfollowX = () => {
 				cameraFollowXTarget = undefined;
 				cameraMinFollowX = undefined;
 				cameraMaxFollowX = undefined;
 			};
 			
-			let cameraUnfollowY = self.cameraUnfollowY = (node) => {
+			let cameraUnfollowY = self.cameraUnfollowY = () => {
 				cameraFollowYTarget = undefined;
 				cameraMinFollowY = undefined;
 				cameraMaxFollowY = undefined;
 			};
 			
-			let cameraUnfollow = self.cameraUnfollow = (node) => {
+			let cameraUnfollow = self.cameraUnfollow = () => {
 				cameraUnfollowX();
 				cameraUnfollowY();
 			};
 			
-			let getCameraFollowX = self.getCameraFollowX = () => {
+			let getCameraFollowingX = self.getCameraFollowingX = () => {
 				
 				if (cameraFollowXTarget === undefined) {
 					return followX;
@@ -341,7 +341,7 @@ OVERRIDE(SkyEngine.Screen, (origin) => {
 				return followX;
 			};
 			
-			let getCameraFollowY = self.getCameraFollowY = () => {
+			let getCameraFollowingY = self.getCameraFollowingY = () => {
 				
 				if (cameraFollowYTarget === undefined) {
 					return followY;

@@ -153,8 +153,8 @@ OVERRIDE(SkyEngine.Node, (origin) => {
 						let ratio = SkyEngine.Screen.getRatio();
 						
 						domWrapper.addStyle({
-							left : SkyEngine.Screen.getLeft() + (SkyEngine.Screen.getWidth() / 2 + self.getDrawingX() - SkyEngine.Screen.getCameraFollowX()) * ratio - domWrapper.getWidth() / 2,
-							top : SkyEngine.Screen.getTop() + (SkyEngine.Screen.getHeight() / 2 + self.getDrawingY() - SkyEngine.Screen.getCameraFollowY()) * ratio - domWrapper.getHeight() / 2,
+							left : SkyEngine.Screen.getLeft() + (SkyEngine.Screen.getWidth() / 2 + self.getDrawingX() - SkyEngine.Screen.getCameraFollowingX()) * ratio - domWrapper.getWidth() / 2,
+							top : SkyEngine.Screen.getTop() + (SkyEngine.Screen.getHeight() / 2 + self.getDrawingY() - SkyEngine.Screen.getCameraFollowingY()) * ratio - domWrapper.getHeight() / 2,
 							transform : 'rotate(' + self.getRealRadian() + 'rad) scale(' + ratio * self.getRealScaleX() + ', ' + ratio * self.getRealScaleY() + ')',
 							opacity : 0
 						});
@@ -181,8 +181,8 @@ OVERRIDE(SkyEngine.Node, (origin) => {
 						let ratio = SkyEngine.Screen.getRatio();
 						
 						domWrapper.addStyle({
-							left : SkyEngine.Screen.getLeft() + (SkyEngine.Screen.getWidth() / 2 + self.getDrawingX() - SkyEngine.Screen.getCameraFollowX()) * ratio - domWrapper.getWidth() / 2,
-							top : SkyEngine.Screen.getTop() + (SkyEngine.Screen.getHeight() / 2 + self.getDrawingY() - SkyEngine.Screen.getCameraFollowY()) * ratio - domWrapper.getHeight() / 2,
+							left : SkyEngine.Screen.getLeft() + (SkyEngine.Screen.getWidth() / 2 + self.getDrawingX() - SkyEngine.Screen.getCameraFollowingX()) * ratio - domWrapper.getWidth() / 2,
+							top : SkyEngine.Screen.getTop() + (SkyEngine.Screen.getHeight() / 2 + self.getDrawingY() - SkyEngine.Screen.getCameraFollowingY()) * ratio - domWrapper.getHeight() / 2,
 							transform : 'rotate(' + self.getRealRadian() + 'rad) scale(' + ratio * self.getRealScaleX() + ', ' + ratio * self.getRealScaleY() + ')',
 							opacity : 0
 						});
@@ -267,8 +267,8 @@ OVERRIDE(SkyEngine.Node, (origin) => {
 						let ratio = SkyEngine.Screen.getRatio();
 						
 						domWrapper.addStyle({
-							left : SkyEngine.Screen.getLeft() + (SkyEngine.Screen.getWidth() / 2 + self.getDrawingX() - SkyEngine.Screen.getCameraFollowX()) * ratio - domWrapper.getWidth() / 2,
-							top : SkyEngine.Screen.getTop() + (SkyEngine.Screen.getHeight() / 2 + self.getDrawingY() - SkyEngine.Screen.getCameraFollowY()) * ratio - domWrapper.getHeight() / 2,
+							left : SkyEngine.Screen.getLeft() + (SkyEngine.Screen.getWidth() / 2 + self.getDrawingX() - SkyEngine.Screen.getCameraFollowingX()) * ratio - domWrapper.getWidth() / 2,
+							top : SkyEngine.Screen.getTop() + (SkyEngine.Screen.getHeight() / 2 + self.getDrawingY() - SkyEngine.Screen.getCameraFollowingY()) * ratio - domWrapper.getHeight() / 2,
 							transform : 'rotate(' + self.getRealRadian() + 'rad) scale(' + ratio * self.getRealScaleX() + ', ' + ratio * self.getRealScaleY() + ')',
 							opacity : isFirst === true ? 0 : pixiContainer.worldAlpha,
 							filter : self.getFilter()
