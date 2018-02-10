@@ -44,38 +44,34 @@ SkyEngine.StateSet = CLASS({
 			});
 		});
 		
-		let setState = self.setState = (_state) => {
+		let setState = self.setState = (_state, _animationEndHandler) => {
+			//REQUIRED: state
+			//OPTIONAL: animationEndHandler
 			
 			if (animationEndHandler !== undefined) {
 				stateNodes[state].off('animationend', animationEndHandler);
 				animationEndHandler = undefined;
 			}
 			
-			if (state !== _state) {
-				
-				state = _state;
-				
-				EACH(stateNodes, (stateNode) => {
-					stateNode.hide();
-				});
-				
-				stateNodes[state].show();
+			state = _state;
+			animationEndHandler = _animationEndHandler;
+			
+			EACH(stateNodes, (stateNode) => {
+				stateNode.hide();
+			});
+			
+			let stateNode = stateNodes[state];
+			
+			if (stateNode !== undefined) {
+				stateNode.show();
+			}
+			
+			if (animationEndHandler !== undefined) {
+				stateNode.on('animationend', animationEndHandler);
 			}
 		};
 		
 		setState(params.baseState);
-		
-		let setToState = self.setToState = (_toState) => {
-			
-			if (state !== _toState) {
-				
-				toState = _toState;
-				
-				stateNodes[state].on('animationend', animationEndHandler = () => {
-					setState(toState);
-				});
-			}
-		};
 		
 		let getState = self.getState = () => {
 			return state;

@@ -9,30 +9,25 @@ SkyEngine.TileMap = CLASS({
 
 	init : (inner, self, params) => {
 		//REQUIRED: params
-		//REQUIRED: params.tileWidth
-		//REQUIRED: params.tileHeight
-		//OPTIONAL: params.tileMap
-		//OPTIONAL: params.tileKeySet
-		//OPTIONAL: params.tileKeyMap
-		//OPTIONAL: params.collisionMap
+		//REQUIRED: params.tileWidth	타일의 너비
+		//REQUIRED: params.tileHeight	타일의 높이
+		//OPTIONAL: params.tileMap		타일 맵을 구성하는 타일들의 2차원 배열
+		//OPTIONAL: params.tileSet		tileKeyMap으로 타일 맵을 구성하기 위한 타일과 타일에 해당하는 키의 목록
+		//OPTIONAL: params.tileKeyMap	tileSet에 선언한 타일들과 키를 기반으로 타일 맵을 구성하기 위한 키들의 2차원 배열
 		
 		let tileWidth = params.tileWidth;
 		let tileHeight = params.tileHeight;
-		let tileKeySet = params.tileKeySet;
+		let tileSet = params.tileSet;
 		let tileKeyMap = params.tileKeyMap;
-		let collisionMap = params.collisionMap;
 		
-		if (tileKeySet === undefined) {
-			tileKeySet = {};
+		if (tileSet === undefined) {
+			tileSet = {};
 		}
 		if (tileKeyMap === undefined) {
 			tileKeyMap = [];
 		}
-		if (collisionMap === undefined) {
-			collisionMap = [];
-		}
 		
-		let tileNodeMap = [];
+		let tileMap = [];
 		
 		let getTileWidth = self.getTileWidth = () => {
 			return tileWidth;
@@ -42,38 +37,20 @@ SkyEngine.TileMap = CLASS({
 			return tileHeight;
 		};
 		
-		let addTileNodeToMap = inner.addTileNodeToMap = (params) => {
-			//REQUIRED: params
-			//REQUIRED: params.row
-			//REQUIRED: params.col
-			//REQUIRED: params.tileNode
-			
-			let row = params.row;
-			let col = params.col;
-			let tileNode = params.tileNode;
-			
-			if (tileNodeMap[row] === undefined) {
-				tileNodeMap[row] = [];
-			}
-			tileNodeMap[row][col] = tileNode;
-		};
-		
-		let addTile = self.addTile = (params) => {
+		let createTile = inner.createTile = (params) => {
 			//REQUIRED: params
 			//REQUIRED: params.row
 			//REQUIRED: params.col
 			//OPTIONAL: params.tile
-			//OPTIONAL: params.isCollider
 			//OPTIONAL: params.key
 			
 			let row = params.row;
 			let col = params.col;
 			let tile = params.tile;
-			let isCollider = params.isCollider;
 			let key = params.key;
 			
-			if (key !== undefined && tileKeySet[key] !== undefined) {
-				tile = tileKeySet[key]();
+			if (key !== undefined && tileSet[key] !== undefined) {
+				tile = tileSet[key](row, col);
 				
 				if (tileKeyMap[row] === undefined) {
 					tileKeyMap[row] = [];
@@ -83,45 +60,43 @@ SkyEngine.TileMap = CLASS({
 			
 			if (tile !== undefined) {
 				
-				if (isCollider === true) {
-					if (collisionMap[row] === undefined) {
-						collisionMap[row] = [];
-					}
-					collisionMap[row][col] = 1;
+				self.append(tile);
+				
+				if (tileMap[row] === undefined) {
+					tileMap[row] = [];
 				}
+				tileMap[row][col] = tile;
+			}
+			
+			return tile;
+		};
+		
+		let addTile = self.addTile = (params) => {
+			//REQUIRED: params
+			//REQUIRED: params.row
+			//REQUIRED: params.col
+			//OPTIONAL: params.tile
+			//OPTIONAL: params.key
+			
+			let row = params.row;
+			let col = params.col;
+			
+			let tile = createTile(params);
+			
+			if (tile !== undefined) {
 				
-				let x = col * tileWidth;
-				let y = row * tileHeight;
-				
-				let tileNode;
-				
-				if (collisionMap[row] !== undefined && collisionMap[row][col] === 1) {
-					tileNode = SkyEngine.CollisionTile({
-						x : x,
-						y : y,
-						c : tile,
-						collider : SkyEngine.Rect({
-							width : tileWidth,
-							height : tileHeight
-						})
-					});
-				}
-				
-				else {
-					tileNode = SkyEngine.Tile({
-						x : x,
-						y : y,
-						c : tile
-					});
-				}
-				
-				self.append(tileNode);
-				
-				addTileNodeToMap({
-					row : row,
-					col : col,
-					tileNode : tileNode
+				tile.setPosition({
+					x : col * tileWidth,
+					y : row * tileHeight
 				});
+				
+				// 충돌체 추가
+				if (tile.checkIsInstanceOf(SkyEngine.CollisionTile) === true) {
+					tile.addCollider(SkyEngine.Rect({
+						width : tileWidth,
+						height : tileHeight
+					}));
+				}
 			}
 		};
 		
@@ -146,9 +121,72 @@ SkyEngine.TileMap = CLASS({
 			let row = params.row;
 			let col = params.col;
 			
-			if (tileNodeMap[row] !== undefined && tileNodeMap[row][col] !== undefined) {
-				return tileNodeMap[row][col].getChildren()[0];
+			if (tileMap[row] !== undefined) {
+				return tileMap[row][col];
 			}
+		};
+		
+		let swapTile = inner.swapTile = (params) => {
+			//REQUIRED: params
+			//REQUIRED: params.fromRow
+			//REQUIRED: params.fromCol
+			//REQUIRED: params.toRow
+			//REQUIRED: params.toCol
+			
+			let fromRow = params.fromRow;
+			let fromCol = params.fromCol;
+			let toRow = params.toRow;
+			let toCol = params.toCol;
+			
+			let t;
+			
+			if (tileKeyMap[toRow] === undefined) {
+				tileKeyMap[toRow] = [];
+			} else {
+				t = tileKeyMap[toRow][toCol];
+			}
+			
+			if (tileKeyMap[fromRow] === undefined) {
+				tileKeyMap[fromRow] = [];
+			} else {
+				tileKeyMap[toRow][toCol] = tileKeyMap[fromRow][fromCol];
+			}
+			
+			tileKeyMap[fromRow][fromCol] = t;
+			
+			let fromTile;
+			if (tileMap[fromRow] !== undefined) {
+				fromTile = tileMap[fromRow][fromCol];
+			}
+			
+			let toTile;
+			if (tileMap[toRow] !== undefined) {
+				toTile = tileMap[toRow][toCol];
+			}
+			
+			if (tileMap[toRow] === undefined) {
+				tileMap[toRow] = [];
+			}
+			tileMap[toRow][toCol] = fromTile;
+			
+			if (toTile === undefined) {
+				if (tileMap[fromRow] !== undefined) {
+					tileMap[fromRow][fromCol] = undefined;
+				}
+			}
+			
+			else {
+				
+				if (tileMap[fromRow] === undefined) {
+					tileMap[fromRow] = [];
+				}
+				tileMap[fromRow][fromCol] = toTile;
+			}
+			
+			return {
+				fromTile : fromTile,
+				toTile : toTile
+			};
 		};
 		
 		let moveTile = self.moveTile = (params, endHandler) => {
@@ -168,53 +206,16 @@ SkyEngine.TileMap = CLASS({
 			let speed = params.speed;
 			let accel = params.accel;
 			
-			let t;
+			let swapResult = swapTile(params);
 			
-			if (collisionMap[toRow] === undefined) {
-				collisionMap[toRow] = [];
-			} else {
-				t = collisionMap[toRow][toCol];
-			}
+			let fromTile = swapResult.fromTile;
+			let toTile = swapResult.toTile;
 			
-			if (collisionMap[fromRow] === undefined) {
-				collisionMap[fromRow] = [];
-			} else {
-				collisionMap[toRow][toCol] = collisionMap[fromRow][fromCol];
-			}
-			
-			collisionMap[fromRow][fromCol] = t;
-			
-			t = undefined;
-			
-			if (tileKeyMap[toRow] === undefined) {
-				tileKeyMap[toRow] = [];
-			} else {
-				t = tileKeyMap[toRow][toCol];
-			}
-			
-			if (tileKeyMap[fromRow] === undefined) {
-				tileKeyMap[fromRow] = [];
-			} else {
-				tileKeyMap[toRow][toCol] = tileKeyMap[fromRow][fromCol];
-			}
-			
-			tileKeyMap[fromRow][fromCol] = t;
-			
-			let fromTileNode;
-			if (tileNodeMap[fromRow] !== undefined) {
-				fromTileNode = tileNodeMap[fromRow][fromCol];
-			}
-			
-			let toTileNode;
-			if (tileNodeMap[toRow] !== undefined) {
-				toTileNode = tileNodeMap[toRow][toCol];
-			}
-			
-			if (fromTileNode !== undefined) {
+			if (fromTile !== undefined) {
 				
 				if (speed !== undefined || accel !== undefined) {
 					
-					fromTileNode.moveTo({
+					fromTile.moveTo({
 						x : toCol * tileWidth,
 						y : toRow * tileHeight,
 						speed : speed,
@@ -222,30 +223,22 @@ SkyEngine.TileMap = CLASS({
 					}, endHandler);
 					
 					endHandler = undefined;
+				}
+				
+				else {
 					
-				} else {
-					fromTileNode.setPosition({
+					fromTile.setPosition({
 						x : toCol * tileWidth,
 						y : toRow * tileHeight
 					});
 				}
 			}
 			
-			addTileNodeToMap({
-				row : toRow,
-				col : toCol,
-				tileNode : fromTileNode
-			});
-			
-			if (toTileNode === undefined) {
-				if (tileNodeMap[fromRow] !== undefined) {
-					tileNodeMap[fromRow][fromCol] = undefined;
-				}
-			} else {
+			if (toTile !== undefined) {
 				
 				if (speed !== undefined || accel !== undefined) {
 					
-					toTileNode.moveTo({
+					toTile.moveTo({
 						x : fromCol * tileWidth,
 						y : fromRow * tileHeight,
 						speed : speed,
@@ -253,19 +246,15 @@ SkyEngine.TileMap = CLASS({
 					}, endHandler);
 					
 					endHandler = undefined;
+				}
+				
+				else {
 					
-				} else {
-					toTileNode.setPosition({
+					toTile.setPosition({
 						x : fromCol * tileWidth,
 						y : fromRow * tileHeight
 					});
 				}
-				
-				addTileNodeToMap({
-					row : fromRow,
-					col : fromCol,
-					tileNode : toTileNode
-				});
 			}
 		};
 		
@@ -277,22 +266,14 @@ SkyEngine.TileMap = CLASS({
 			let row = params.row;
 			let col = params.col;
 			
-			if (collisionMap[row] !== undefined) {
-				collisionMap[row][col] = undefined;
-			}
-			
 			if (tileKeyMap[row] !== undefined) {
 				tileKeyMap[row][col] = undefined;
 			}
 			
-			if (tileNodeMap[row] !== undefined && tileNodeMap[row][col] !== undefined) {
-				tileNodeMap[row][col].remove();
-				tileNodeMap[row][col] = undefined;
+			if (tileMap[row] !== undefined && tileMap[row][col] !== undefined) {
+				tileMap[row][col].remove();
+				tileMap[row][col] = undefined;
 			}
-		};
-		
-		let getCollisionMap = self.getCollisionMap = () => {
-			return collisionMap;
 		};
 		
 		let empty;
@@ -301,12 +282,22 @@ SkyEngine.TileMap = CLASS({
 			empty = self.empty = () => {
 				
 				tileKeyMap = [];
-				collisionMap = [];
-				tileNodeMap = [];
+				tileMap = [];
 				
 				origin();
 			};
 		});
+		
+		let checkCollisionTile = self.checkCollisionTile = (params) => {
+			//REQUIRED: params
+			//REQUIRED: params.row
+			//REQUIRED: params.col
+			
+			let row = params.row;
+			let col = params.col;
+			
+			return tileMap[row] !== undefined && tileMap[row][col] !== undefined && tileMap[row][col].checkIsInstanceOf(SkyEngine.CollisionTile) === true;
+		};
 		
 		let findPath = self.findPath = (params) => {
 			//REQUIRED: params
@@ -326,7 +317,13 @@ SkyEngine.TileMap = CLASS({
 			
 			let register = (parent, row, col) => {
 				
-				if (collisionMap[row] !== undefined && collisionMap[row][col] === 0) {
+				if (getTile({
+					row : row,
+					col : col
+				}) !== undefined && checkCollisionTile({
+					row : row,
+					col : col
+				}) !== true) {
 					
 					if (costMap[row] === undefined) {
 						costMap[row] = [];

@@ -4,7 +4,7 @@
 SkyEngine.Background = CLASS({
 	
 	preset : () => {
-		return SkyEngine.Node;
+		return SkyEngine.FixedNode;
 	},
 	
 	init : (inner, self, params) => {
@@ -12,7 +12,6 @@ SkyEngine.Background = CLASS({
 		//REQUIRED: params.src
 		//OPTIONAL: params.isNotToRepeatX
 		//OPTIONAL: params.isNotToRepeatY
-		//OPTIONAL: params.followScreenRatio
 		//OPTIONAL: params.leftMargin
 		//OPTIONAL: params.rightMargin
 		//OPTIONAL: params.topMargin
@@ -21,15 +20,10 @@ SkyEngine.Background = CLASS({
 		let src = params.src;
 		let isNotToRepeatX = params.isNotToRepeatX;
 		let isNotToRepeatY = params.isNotToRepeatY;
-		let followScreenRatio = params.followScreenRatio;
 		let leftMargin = params.leftMargin;
 		let rightMargin = params.rightMargin;
 		let topMargin = params.topMargin;
 		let bottomMargin = params.bottomMargin;
-		
-		if (followScreenRatio === undefined) {
-			followScreenRatio = 0;
-		}
 		
 		if (leftMargin === undefined) {
 			leftMargin = 0;
@@ -60,35 +54,6 @@ SkyEngine.Background = CLASS({
 		};
 		
 		img.src = src;
-		
-		let beforeScreenX;
-		let beforeScreenY;
-		
-		let step;
-		OVERRIDE(self.step, (origin) => {
-			
-			step = self.step = (deltaTime) => {
-				
-				if (followScreenRatio !== 1) {
-					
-					let screenX = SkyEngine.Screen.getCameraFollowX() - SkyEngine.Screen.getX();
-					let screenY = SkyEngine.Screen.getCameraFollowY() - SkyEngine.Screen.getY();
-					
-					if (beforeScreenX !== undefined) {
-						self.setX(self.getX() + (screenX - beforeScreenX) * (1 - followScreenRatio) / self.getRealScaleX());
-					}
-					
-					if (beforeScreenY !== undefined) {
-						self.setY(self.getY() + (screenY - beforeScreenY) * (1 - followScreenRatio) / self.getRealScaleY());
-					}
-					
-					beforeScreenX = screenX;
-					beforeScreenY = screenY;
-				}
-				
-				origin(deltaTime);
-			};
-		});
 		
 		let draw;
 		OVERRIDE(self.draw, (origin) => {

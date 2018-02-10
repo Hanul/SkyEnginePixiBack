@@ -166,13 +166,15 @@ SkyEngine.Silhouette = CLASS((cls) => {
 				draw = self.draw = (context) => {
 					
 					if (imageData !== undefined) {
-											
-						context.drawImage(
-							img,
-							-width / 2,
-							-height / 2,
-							width,
-							height);
+						
+						if (color !== undefined) {
+							context.drawImage(
+								img,
+								-width / 2,
+								-height / 2,
+								width,
+								height);
+						}
 						
 						if (border !== undefined && polygonPoints.length > 0) {
 							

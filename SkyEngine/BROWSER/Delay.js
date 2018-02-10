@@ -1,3 +1,6 @@
+/*
+ * 주어진 초가 흐른 뒤에 함수를 실행하는 클래스
+ */
 SkyEngine.Delay = CLASS((cls) => {
 	
 	let delays = [];

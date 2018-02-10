@@ -206,7 +206,7 @@ SkyEngine.Sprite = CLASS({
 					beforeFrame = frame;
 					frame = Math.floor(realFrame);
 					
-					if (frame !== beforeFrame) {
+					if (frame !== beforeFrame && self.checkIsRemoved() !== true) {
 						self.fireEvent('framechange');
 					}
 				}

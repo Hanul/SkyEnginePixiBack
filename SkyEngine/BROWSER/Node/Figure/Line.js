@@ -213,7 +213,7 @@ SkyEngine.Line = CLASS((cls) => {
 				}
 			}
 			
-			else if (d == 0) {
+			else if (d === 0) {
 				
 				let resultX = -s / (2 * r);
 				let resultY = a * resultX + b;

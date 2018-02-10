@@ -31,10 +31,18 @@ SkyEngine.Screen = OBJECT({
 		
 		let registeredNodeMap = {};
 		
+		let followX = 0;
+		let followY = 0;
+		
 		let cameraFollowCenterX;
 		let cameraFollowCenterY;
 		let cameraFollowXTarget;
 		let cameraFollowYTarget;
+		
+		let cameraMinFollowX;
+		let cameraMinFollowY;
+		let cameraMaxFollowX;
+		let cameraMaxFollowY;
 		
 		// 드로잉 노드 등록
 		let registerNode = self.registerNode = (node) => {
@@ -80,7 +88,7 @@ SkyEngine.Screen = OBJECT({
 			}
 		};
 		
-		let getRegisteredNodes = self.getRegisteredNodes = (cls) => {
+		let findNodesByClass = self.findNodesByClass = (cls) => {
 			return registeredNodeMap[cls.id] === undefined ? [] : registeredNodeMap[cls.id];
 		};
 		
@@ -263,6 +271,12 @@ SkyEngine.Screen = OBJECT({
 				
 				// 모든 노드의 step을 실행합니다.
 				self.step(deltaTime);
+				
+				let fixedNodes = findNodesByClass(SkyEngine.FixedNode);
+				
+				for (let i = 0; i < fixedNodes.length; i += 1) {
+					fixedNodes[i].step(0);
+				}
 			}
 			
 			nonePausableNode.step(deltaTime);
@@ -349,6 +363,8 @@ SkyEngine.Screen = OBJECT({
 			//REQUIRED: params
 			//REQUIRED: params.target
 			//OPTIONAL: params.centerX
+			//OPTIONAL: params.minX
+			//OPTIONAL: params.maxX
 			
 			cameraFollowXTarget = params.target;
 			
@@ -356,12 +372,17 @@ SkyEngine.Screen = OBJECT({
 			if (cameraFollowCenterX === undefined) {
 				cameraFollowCenterX = 0;
 			}
+			
+			cameraMinFollowX = params.minX;
+			cameraMaxFollowX = params.maxX;
 		};
 		
-		let cameraFollowY = self.cameraFollowY = (node) => {
+		let cameraFollowY = self.cameraFollowY = (params) => {
 			//REQUIRED: params
 			//REQUIRED: params.target
 			//OPTIONAL: params.centerY
+			//OPTIONAL: params.minY
+			//OPTIONAL: params.maxY
 			
 			cameraFollowYTarget = params.target;
 			
@@ -369,27 +390,38 @@ SkyEngine.Screen = OBJECT({
 			if (cameraFollowCenterY === undefined) {
 				cameraFollowCenterY = 0;
 			}
+			
+			cameraMinFollowY = params.minY;
+			cameraMaxFollowY = params.maxY;
 		};
 		
-		let cameraFollow = self.cameraFollow = (node) => {
+		let cameraFollow = self.cameraFollow = (params) => {
 			//REQUIRED: params
 			//REQUIRED: params.target
 			//OPTIONAL: params.centerX
 			//OPTIONAL: params.centerY
+			//OPTIONAL: params.minX
+			//OPTIONAL: params.minY
+			//OPTIONAL: params.maxX
+			//OPTIONAL: params.maxY
 			
 			cameraFollowX(params);
 			cameraFollowY(params);
 		};
 		
-		let cameraUnfollowX = self.cameraUnfollowX = (node) => {
+		let cameraUnfollowX = self.cameraUnfollowX = () => {
 			cameraFollowXTarget = undefined;
+			cameraMinFollowX = undefined;
+			cameraMaxFollowX = undefined;
 		};
 		
-		let cameraUnfollowY = self.cameraUnfollowY = (node) => {
+		let cameraUnfollowY = self.cameraUnfollowY = () => {
 			cameraFollowYTarget = undefined;
+			cameraMinFollowY = undefined;
+			cameraMaxFollowY = undefined;
 		};
 		
-		let cameraUnfollow = self.cameraUnfollow = (node) => {
+		let cameraUnfollow = self.cameraUnfollow = () => {
 			cameraUnfollowX();
 			cameraUnfollowY();
 		};
@@ -397,29 +429,49 @@ SkyEngine.Screen = OBJECT({
 		let getCameraFollowX = self.getCameraFollowX = () => {
 			
 			if (cameraFollowXTarget === undefined) {
-				return 0;
+				return followX;
 			}
 			
 			if (cameraFollowXTarget.checkIsRemoved() === true) {
 				cameraFollowXTarget = undefined;
-				return 0;
+				return followX;
 			}
 			
-			return cameraFollowXTarget.getRealX() - cameraFollowCenterX;
+			followX = cameraFollowXTarget.getRealX() - cameraFollowCenterX;
+			
+			if (cameraMinFollowX !== undefined && followX < cameraMinFollowX) {
+				return cameraMinFollowX;
+			}
+			
+			if (cameraMaxFollowX !== undefined && followX > cameraMaxFollowX) {
+				return cameraMaxFollowX;
+			}
+			
+			return followX;
 		};
 		
 		let getCameraFollowY = self.getCameraFollowY = () => {
 			
 			if (cameraFollowYTarget === undefined) {
-				return 0;
+				return followY;
 			}
 			
 			if (cameraFollowYTarget.checkIsRemoved() === true) {
 				cameraFollowYTarget = undefined;
-				return 0;
+				return followY;
 			}
 			
-			return cameraFollowYTarget.getRealY() - cameraFollowCenterY;
+			followY = cameraFollowYTarget.getRealY() - cameraFollowCenterY;
+			
+			if (cameraMinFollowY !== undefined && followY < cameraMinFollowY) {
+				return cameraMinFollowY;
+			}
+			
+			if (cameraMaxFollowY !== undefined && followY > cameraMaxFollowY) {
+				return cameraMaxFollowY;
+			}
+			
+			return followY;
 		};
 		
 		let getLeft = self.getLeft = () => {

@@ -27,19 +27,38 @@ SkyEngine.Image = CLASS((cls) => {
 			let width;
 			let height;
 			
-			let img = new Image();
+			let cropTop = 0;
+			let cropRight = 0;
+			let cropBottom = 0;
+			let cropLeft = 0;
 			
-			img.onload = () => {
+			let img;
+			
+			let setSrc = self.setSrc = (_src) => {
+				src = _src;
 				
-				width = img.width;
-				height = img.height;
+				let tempImg = new Image();
 				
-				img.onload = undefined;
+				if (img === undefined) {
+					img = tempImg;
+				}
 				
-				self.fireEvent('load');
+				tempImg.onload = () => {
+					
+					width = tempImg.width;
+					height = tempImg.height;
+					
+					tempImg.onload = undefined;
+					
+					img = tempImg;
+					
+					self.fireEvent('load');
+				};
+				
+				tempImg.src = src;
 			};
 			
-			img.src = src;
+			setSrc(src);
 			
 			let checkPoint;
 			OVERRIDE(self.checkPoint, (origin) => {
@@ -138,12 +157,21 @@ SkyEngine.Image = CLASS((cls) => {
 				
 				draw = self.draw = (context) => {
 					
-					context.drawImage(
-						img,
-						-width / 2,
-						-height / 2,
-						width,
-						height);
+					let w = width - cropLeft - cropRight;
+					let h = height - cropTop - cropBottom;
+					
+					if (w > 0 && h > 0) {
+						context.drawImage(
+							img,
+							cropLeft,
+							cropTop,
+							w,
+							h,
+							-width / 2 + cropLeft,
+							-height / 2 + cropTop,
+							w,
+							h);
+					}
 					
 					origin(context);
 				};
@@ -234,6 +262,27 @@ SkyEngine.Image = CLASS((cls) => {
 			
 			let getImg = inner.getImg = () => {
 				return img;
+			};
+			
+			let crop = self.crop = (params) => {
+				//REQUIRED: params
+				//REQUIRED: params.top
+				//REQUIRED: params.right
+				//REQUIRED: params.bottom
+				//REQUIRED: params.left
+				
+				if (params.top !== undefined) {
+					cropTop = params.top;
+				}
+				if (params.right !== undefined) {
+					cropRight = params.right;
+				}
+				if (params.bottom !== undefined) {
+					cropBottom = params.bottom;
+				}
+				if (params.left !== undefined) {
+					cropLeft = params.left;
+				}
 			};
 		}
 	};
