@@ -16,10 +16,14 @@ SkyEngine.Silhouette = CLASS((cls) => {
 			//REQUIRED: params.src
 			//OPTIONAL: params.color
 			//OPTIONAL: params.border
+			//OPTIONAL: params.width
+			//OPTIONAL: params.height
 			
 			let src = params.src;
 			let color = params.color;
 			let border = params.border;
+			let width = params.width;
+			let height = params.height;
 			
 			let checkRectRect = SkyEngine.Util.Collision.checkRectRect;
 			
@@ -39,9 +43,6 @@ SkyEngine.Silhouette = CLASS((cls) => {
 			
 			let polygonPoints;
 			
-			let width;
-			let height;
-			
 			let setSrc = self.setSrc = (_src) => {
 				src = _src;
 				
@@ -49,8 +50,12 @@ SkyEngine.Silhouette = CLASS((cls) => {
 				
 				img.onload = () => {
 					
-					width = img.width;
-					height = img.height;
+					if (width === undefined) {
+						width = img.width;
+					}
+					if (height === undefined) {
+						height = img.height;
+					}
 					
 					let imageCanvas = CANVAS({
 						style : {
@@ -61,7 +66,7 @@ SkyEngine.Silhouette = CLASS((cls) => {
 					}).appendTo(BODY);
 					
 					let imageContext = imageCanvas.getContext('2d');
-					imageContext.drawImage(img, 0, 0, width, height);
+					imageContext.drawImage(img, 0, 0, img.width, img.height);
 					
 					let imgData = imageContext.getImageData(0, 0, width, height);
 					imageData = imgData.data;

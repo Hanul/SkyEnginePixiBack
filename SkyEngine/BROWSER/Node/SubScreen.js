@@ -1,35 +1,37 @@
 /*
- * 게임 화면 전체를 다루는 오브젝트
+ * 서브스크린 노드
  */
-SkyEngine.Screen = OBJECT({
+SkyEngine.SubScreen = CLASS({
 	
 	preset : () => {
 		return SkyEngine.Node;
 	},
-	
-	init : (inner, self) => {
+
+	init : (inner, self, params) => {
+		//REQUIRED: params
+		//OPTIONAL: params.style
+		//REQUIRED: params.width
+		//REQUIRED: params.height
+		//OPTIONAL: params.isDebugMode
+		
+		let style = params.style;
+		let width = params.width;
+		let height = params.height;
+		let isDebugMode = params.isDebugMode;
 		
 		let wrapper = DIV({
-			style : {
-				position : 'fixed',
-				left : 0,
-				top : 0,
-				zIndex : -1
-			}
-		}).appendTo(BODY);
+			style : COMBINE([{
+				position : 'relative'
+			}, style])
+		});
 		
 		let canvas = CANVAS().appendTo(wrapper);
 		let context = canvas.getContext('2d');
 		
 		let left;
 		let top;
-		let width;
-		let height;
-		let ratio;
 		
 		let deltaTime;
-		
-		let registeredNodeMap = {};
 		
 		let followX = 0;
 		let followY = 0;
@@ -44,66 +46,18 @@ SkyEngine.Screen = OBJECT({
 		let cameraMaxFollowX;
 		let cameraMaxFollowY;
 		
-		// 드로잉 노드 등록
-		let registerNode = self.registerNode = (node) => {
-			
-			let cls = node.type;
-			
-			while (cls !== undefined && cls !== CLASS) {
-				
-				if (registeredNodeMap[cls.id] === undefined) {
-					registeredNodeMap[cls.id] = [];
-				}
-				
-				registeredNodeMap[cls.id].push(node);
-				
-				cls = cls.mom;
-			}
-		};
-		
-		// 드로잉 노드 해제
-		let unregisterNode = self.unregisterNode = (node) => {
-			
-			let cls = node.type;
-			
-			while (cls !== undefined && cls !== CLASS) {
-				
-				if (registeredNodeMap[cls.id] !== undefined) {
-					
-					let nodes = registeredNodeMap[cls.id];
-					
-					for (let i = 0; i < nodes.length; i += 1) {
-						if (nodes[i] === node) {
-							nodes.splice(i, 1);
-							break;
-						}
-					}
-					
-					if (registeredNodeMap[cls.id].length === 0) {
-						delete registeredNodeMap[cls.id];
-					}
-				}
-				
-				cls = cls.mom;
-			}
-		};
-		
-		let findNodesByClass = self.findNodesByClass = (cls) => {
-			return registeredNodeMap[cls.id] === undefined ? [] : registeredNodeMap[cls.id];
-		};
-		
 		// 디버그 모드에서는 FPS 수치 표시
-		if (BROWSER_CONFIG.SkyEngine.isDebugMode === true) {
+		if (isDebugMode === true || BROWSER_CONFIG.SkyEngine.isDebugMode === true) {
 			
 			let fpsDom = DIV({
 				style : {
-					position : 'fixed',
+					position : 'absolute',
 					left : 5,
 					top : 5,
 					fontSize : 12,
 					zIndex : 999999
 				}
-			}).appendTo(BODY);
+			}).appendTo(wrapper);
 			
 			INTERVAL(0.1, () => {
 				
@@ -133,7 +87,7 @@ SkyEngine.Screen = OBJECT({
 						if (
 						node.checkIsRemoved() !== true &&
 						node.checkIsEventExists(eventName) === true &&
-						node.checkTouch((e.getLeft() - WIN_WIDTH() / 2) / ratio, (e.getTop() - WIN_HEIGHT() / 2) / ratio) === true) {
+						node.checkTouch(e.getLeft() - canvas.getLeft() - width / 2, e.getTop() - canvas.getTop() - height / 2) === true) {
 							
 							let se = SkyEngine.E(e);
 							
@@ -223,7 +177,7 @@ SkyEngine.Screen = OBJECT({
 				context.restore();
 				
 				// 개발 모드에서는 중점 및 영역 표시
-				if (node.checkIsRemoved() !== true && BROWSER_CONFIG.SkyEngine.isDebugMode === true) {
+				if (node.checkIsRemoved() !== true && (isDebugMode === true || BROWSER_CONFIG.SkyEngine.isDebugMode === true)) {
 					
 					// 중점을 그립니다.
 					context.beginPath();
@@ -272,12 +226,6 @@ SkyEngine.Screen = OBJECT({
 				
 				// 모든 노드의 step을 실행합니다.
 				self.step(deltaTime);
-				
-				let fixedNodes = findNodesByClass(SkyEngine.FixedNode);
-				
-				for (let i = 0; i < fixedNodes.length; i += 1) {
-					fixedNodes[i].step(0);
-				}
 			}
 			
 			nonePausableNode.step(deltaTime);
@@ -295,66 +243,34 @@ SkyEngine.Screen = OBJECT({
 		});
 		
 		// 화면 크기가 변경되는 경우, 캔버스의 크기 또한 변경되어야 합니다.
-		EVENT('resize', RAR(() => {
+		let setSize = self.setSize = (params) => {
+			//REQUIRED: params
+			//REQUIRED: params.width
+			//REQUIRED: params.height
 			
-			let winWidth = WIN_WIDTH();
-			let winHeight = WIN_HEIGHT();
-			
-			if (BROWSER_CONFIG.SkyEngine.width !== undefined) {
-				width = BROWSER_CONFIG.SkyEngine.width;
-			} else {
-				width = winWidth;
-			}
-			
-			if (BROWSER_CONFIG.SkyEngine.height !== undefined) {
-				height = BROWSER_CONFIG.SkyEngine.height;
-			} else {
-				height = winHeight;
-			}
-			
-			let widthRatio = winWidth / width;
-			let heightRatio = winHeight / height;
-			
-			if (widthRatio < heightRatio) {
-				ratio = widthRatio;
-			} else {
-				ratio = heightRatio;
-			}
-			
-			if (BROWSER_CONFIG.SkyEngine.width === undefined) {
-				width /= ratio;
-			}
-			
-			if (BROWSER_CONFIG.SkyEngine.height === undefined) {
-				height /= ratio;
-			}
-			
-			if (BROWSER_CONFIG.SkyEngine.maxWidth !== undefined && width > BROWSER_CONFIG.SkyEngine.maxWidth) {
-				width = BROWSER_CONFIG.SkyEngine.maxWidth;
-			}
-			
-			if (BROWSER_CONFIG.SkyEngine.maxHeight !== undefined && height > BROWSER_CONFIG.SkyEngine.maxHeight) {
-				height = BROWSER_CONFIG.SkyEngine.maxHeight;
-			}
-			
-			canvas.addStyle({
-				width : width * ratio,
-				height : height * ratio
-			});
-			
-			left = (winWidth - width * ratio) / 2;
-			top = (winHeight - height * ratio) / 2;
+			width = params.width;
+			height = params.height;
 			
 			wrapper.addStyle({
-				left : left,
-				top : top
+				width : width,
+				height : height
+			});
+			
+			canvas.addStyle({
+				width : width,
+				height : height
 			});
 			
 			canvas.setSize({
 				width : width * devicePixelRatio,
 				height : height * devicePixelRatio
 			});
-		}));
+		};
+		
+		setSize({
+			width : width,
+			height : height
+		});
 		
 		self.on('remove', () => {
 			loop.remove();
@@ -495,10 +411,6 @@ SkyEngine.Screen = OBJECT({
 			return height;
 		};
 		
-		let getRatio = self.getRatio = () => {
-			return ratio;
-		};
-		
 		let getCanvas = self.getCanvas = () => {
 			return canvas;
 		};
@@ -512,5 +424,23 @@ SkyEngine.Screen = OBJECT({
 		let getNonePausableNode = self.getNonePausableNode = () => {
 			return nonePausableNode;
 		};
+		
+		let appendTo;
+		OVERRIDE(self.appendTo, (origin) => {
+			
+			appendTo = self.appendTo = (domNode) => {
+				wrapper.appendTo(domNode);
+				return self;
+			};
+		});
+		
+		let remove;
+		OVERRIDE(self.remove, (origin) => {
+			
+			remove = self.remove = () => {
+				origin();
+				wrapper.remove();
+			};
+		});
 	}
 });

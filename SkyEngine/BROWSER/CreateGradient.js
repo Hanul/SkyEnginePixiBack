@@ -1,3 +1,6 @@
+/*
+ * 그라디언트 색상을 생성합니다.
+ */
 SkyEngine.CreateGradient = METHOD({
 	
 	run : (params) => {

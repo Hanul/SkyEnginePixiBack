@@ -14,12 +14,14 @@ SkyEngine.Sprite = CLASS({
 		//OPTIONAL: params.spriteWidth
 		//OPTIONAL: params.spriteHeight
 		//OPTIONAL: params.fps
+		//OPTIONAL: params.frameCount
 		
 		let src = params.src;
 		let srcs = params.srcs;
 		let spriteWidth = params.spriteWidth;
 		let spriteHeight = params.spriteHeight;
 		let fps = params.fps;
+		let frameCount = params.frameCount;
 		
 		let checkRectRect = SkyEngine.Util.Collision.checkRectRect;
 		
@@ -28,7 +30,6 @@ SkyEngine.Sprite = CLASS({
 		
 		let width;
 		let height;
-		let frameCount;
 		
 		let realFrame = 0;
 		let frame = 0;
@@ -49,7 +50,11 @@ SkyEngine.Sprite = CLASS({
 				height = img.height;
 				
 				if (spriteWidth === undefined) {
-					spriteWidth = width;
+					if (frameCount !== undefined) {
+						spriteWidth = width / frameCount;
+					} else {
+						spriteWidth = width;
+					}
 				}
 				
 				if (spriteHeight === undefined) {
@@ -285,6 +290,14 @@ SkyEngine.Sprite = CLASS({
 		
 		let getRealFrame = inner.getRealFrame = () => {
 			return realFrame;
+		};
+		
+		let getSpriteWidth = self.getSpriteWidth = () => {
+			return spriteWidth;
+		};
+		
+		let getSpriteHeight = self.getSpriteHeight = () => {
+			return spriteHeight;
 		};
 	}
 });

@@ -15,8 +15,8 @@
 ## 설치하기
 프로젝트의 `DEPENDENCY` 파일에 `Hanul/SkyEnginePixiBack`을 추가합니다.
 
-## 소스코드
-https://github.com/Hanul/SkyEnginePixiBack
+## 문서
+* [API 문서](API/README.md)
 
 ## 라이센스
 [MIT](LICENSE)

@@ -176,8 +176,8 @@ OVERRIDE(SkyEngine.Screen, (origin) => {
 				
 				nonePausableNode.step(deltaTime);
 				
-				stage.x = width / 2 - getCameraFollowingX();
-				stage.y = height / 2 - getCameraFollowingY();
+				stage.x = width / 2 - getCameraFollowX();
+				stage.y = height / 2 - getCameraFollowY();
 				
 				renderer.render(stage);
 			});
@@ -317,7 +317,7 @@ OVERRIDE(SkyEngine.Screen, (origin) => {
 				cameraUnfollowY();
 			};
 			
-			let getCameraFollowingX = self.getCameraFollowingX = () => {
+			let getCameraFollowX = self.getCameraFollowX = () => {
 				
 				if (cameraFollowXTarget === undefined) {
 					return followX;
@@ -341,7 +341,7 @@ OVERRIDE(SkyEngine.Screen, (origin) => {
 				return followX;
 			};
 			
-			let getCameraFollowingY = self.getCameraFollowingY = () => {
+			let getCameraFollowY = self.getCameraFollowY = () => {
 				
 				if (cameraFollowYTarget === undefined) {
 					return followY;

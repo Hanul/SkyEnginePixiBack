@@ -69,6 +69,7 @@ SkyEngine.Node = CLASS({
 		
 		//OPTIONAL: params.c					자식 노드. 하나의 노드를 지정하거나, 노드들의 배열을 지정할 수 있습니다.
 		//OPTIONAL: params.isToCheckCollision	true로 지정하면 최대 충돌 계산 크기 설정에 관계없이 해당 노드는 충돌 계산을 하게끔 강제합니다.
+		//OPTIONAL: params.isY2ZIndex			true로 지정하면 y값이 변경되는 것을 감지하여 z 인덱스에 반영합니다.
 		
 		// properties
 		let x, y, zIndex, centerX, centerY, scaleX, scaleY, angle, alpha;
@@ -118,6 +119,7 @@ SkyEngine.Node = CLASS({
 		let filter;
 		let blendMode;
 		let isToCheckCollision;
+		let isY2ZIndex;
 
 		let isStuckLeft;
 		let isStuckRight;
@@ -173,6 +175,10 @@ SkyEngine.Node = CLASS({
 
 			y = _y;
 			genRealPosition();
+			
+			if (isY2ZIndex === true) {
+				setZIndex(y);
+			}
 		};
 
 		let getY = self.getY = () => {
@@ -207,6 +213,9 @@ SkyEngine.Node = CLASS({
 			}
 			if (position.y !== undefined) {
 				y = position.y;
+				if (isY2ZIndex === true) {
+					setZIndex(y);
+				}
 			}
 
 			if (position.x !== undefined || position.y !== undefined) {
@@ -837,6 +846,7 @@ SkyEngine.Node = CLASS({
 			filter = params.filter;
 			blendMode = params.blendMode;
 			isToCheckCollision = params.isToCheckCollision;
+			isY2ZIndex = params.isY2ZIndex;
 			
 			onDisplayResize = params.onDisplayResize;
 		}
@@ -934,6 +944,10 @@ SkyEngine.Node = CLASS({
 					self.setHeight(result.height);
 				}
 			}));
+		}
+		
+		if (isY2ZIndex === true) {
+			setZIndex(y);
 		}
 
 		// 노드 등록
@@ -1210,8 +1224,8 @@ SkyEngine.Node = CLASS({
 				toX = params.x;
 				toY = params.y;
 				
-				let dx = (toX - x);
-				let dy = (toY - y);
+				let dx = toX - x;
+				let dy = toY - y;
 
 				let length = Math.sqrt(dx * dx + dy * dy);
 
@@ -1898,6 +1912,8 @@ SkyEngine.Node = CLASS({
 		};
 
 		let on = self.on = (eventName, eventHandler) => {
+			//REQUIRED: eventName
+			//REQUIRED: eventHandler
 			
 			if (isRemoved === true) {
 				if (eventName === 'remove') {
@@ -1916,10 +1932,14 @@ SkyEngine.Node = CLASS({
 		};
 		
 		let checkIsEventExists = self.checkIsEventExists = (eventName) => {
+			//REQUIRED: eventName
+			
 			return eventMap[eventName] !== undefined;
 		};
 
 		let off = self.off = (eventName, eventHandler) => {
+			//REQUIRED: eventName
+			//OPTIONAL: eventHandler
 
 			if (isRemoved !== true && eventMap[eventName] !== undefined) {
 
@@ -2467,6 +2487,10 @@ SkyEngine.Node = CLASS({
 								}
 							}
 						}
+						
+						if (isY2ZIndex === true) {
+							setZIndex(y);
+						}
 					}
 				}
 				
@@ -2729,6 +2753,26 @@ SkyEngine.Node = CLASS({
 		
 		let checkIsToCheckCollision = self.checkIsToCheckCollision = () => {
 			return isToCheckCollision;
+		};
+		
+		let delay = self.delay = (seconds, func) => {
+			
+			let _delay = SkyEngine.Delay(seconds, func);
+			
+			on('remove', () => {
+				_delay.remove();
+				_delay = undefined;
+			});
+		};
+		
+		let interval = self.interval = (seconds, func) => {
+			
+			let _interval = SkyEngine.Interval(seconds, func);
+			
+			on('remove', () => {
+				_interval.remove();
+				_interval = undefined;
+			});
 		};
 
 		genRealProperties();
