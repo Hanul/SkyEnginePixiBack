@@ -1,3 +1,5 @@
+***SkyEngine에 PixiJS가 자체적으로 포함되었습니다. 따라서 이 BOX는 더 이상 필요하지 않습니다.***
+
 # SkyEngine Pixi Back
 [SkyEngine](http://skyengine.uppercase.io/) 드로잉 성능 향상을 위해 [PixiJS](http://www.pixijs.com/)를 적용합니다.
 
